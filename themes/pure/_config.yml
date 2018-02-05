@@ -31,14 +31,14 @@ site:
     width: 40
     height: 40
     url: ../images/logo.png
-  title: Hexo # 页面title
+  title: Youngs # 页面title
   favicon: /favicon.png
   board: <p>欢迎交流与分享经验!</p> # 站点公告
   copyright: false # 底部版权信息
 
 # config
 config:
-  skin: # 主题颜色 theme-black theme-blue theme-green theme-purple
+  skin: theme-black # 主题颜色 theme-black theme-blue theme-green theme-purple
   layout: main-center # 布局方式 main-left main-center main-right
   toc: true # 是否开启文章章节目录导航
   menu_highlight: false # 是否开启当前菜单高亮显示
@@ -100,7 +100,7 @@ share:
 
 # Github
 github: 
-  username: cofess  # github username
+  username: StoneMa  # github username
 
 # Comment
 # Gitment
@@ -131,7 +131,7 @@ comment:
   # https://api.douban.com/v2/movie/subject/:id 单个电影信息
   # https://api.douban.com/v2/movie/search?q={text} 电影搜索
 douban:
-  user: # 豆瓣用户名
+  user: mayingshi # 豆瓣用户名
   start: 0 # 从哪一条记录开始
   count: 100 # 获取豆瓣书单数据条数
   
@@ -168,51 +168,48 @@ profile:
   enabled: true # Whether to show profile bar
   avatar: images/avatar.jpg
   gravatar: # Gravatar email address, if you enable Gravatar, your avatar config will be overriden
-  author: 昵称
-  author_title: Web Developer & Designer
-  author_description: 个人简介。
-  location: Shenzhen, China
-  follow: https://github.com/cofess
+  author: Youngs
+  author_title: Computer Science & Software Engineer
+  author_description: 吾虽浪迹天涯 却未迷失本心
+  location: Tianjin, China
+  follow: https://github.com/StoneMa
   # Social Links
   social:
     links:
-      github: https://github.com/cofess
-      weibo: http://weibo.com/cofess
-      twitter: https://twitter.com/iwebued
-      # facebook: /
-      # dribbble: /
-      behance: https://www.behance.net/cofess
+      github: https://github.com/StoneMa
+      zhihu: https://www.zhihu.com/people/Stone.ma
+      segmentfault: https://segmentfault.com/u/ying_ying
       rss: atom.xml
     link_tooltip: true # enable the social link tooltip, options: true, false
   # My Skills 
   skills:
     Git: ★★★☆☆
-    Gulp: ★★★☆☆
     Javascript: ★★★☆☆
-    HTML+CSS: ★★★☆☆
-    Bootstrap: ★★★☆☆
-    ThinkPHP: ★★★☆☆
-    平面设计: ★★★☆☆
+    JavaWeb: ★★★★☆
+    WebGL: ★★★☆☆
+    Three.js: ★★★☆☆
+    MachineLearning: ★★★☆☆
+    Tensorflow: ★★★☆☆
   # My Personal Links
   links:
-    Github: https://github.com/cofess
-    Blog: http://blog.cofess.com
-    微博: http://weibo.com/cofess
-    花瓣: http://huaban.com/cofess
-    Behance: https://www.behance.net/cofess
+    Github: https://github.com/StoneMa
+    zhihu: https://www.zhihu.com/people/Stone.ma
+    segmentfault: https://segmentfault.com/u/ying_ying
   # My Personal Labels
   labels:
-    - 前端
-    - 前端开发
-    - 前端重构
-    - Web前端
-    - 网页重构
+    - JavaWeb
+    - WebGL
+    - Three.js
+    - Web前端 
+    - JavaScript
+    - 机器学习
+    - TensorFlow
   # My Personal Works
   works:
     name:
-      link: http://www.example.com
-      date: 2016
+      link: https://github.com/StoneMa/Awesome-Threejs
+      date: 2017
   # My Personal Projects
   projects:
-    cofess/gulp-startpro: https://github.com/cofess/gulp-startpro
-    cofess/hexo-theme-pure: https://github.com/cofess/hexo-theme-pure
+    StoneMa/Awesome-Threejs: https://github.com/StoneMa/Awesome-Threejs
+    StoneMa/StoneMa.github.io: https://github.com/StoneMa/StoneMa.github.io

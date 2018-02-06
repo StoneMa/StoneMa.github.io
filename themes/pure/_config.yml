@@ -106,17 +106,17 @@ github:
 # Gitment
 # Introduction: https://imsun.net/posts/gitment-introduction/
 comment:
-  type: youyan  # 启用哪种评论系统
+  type: gitment  # 启用哪种评论系统
   disqus:  # enter disqus shortname here
   youyan: 
-    uid: 1783844 # enter youyan uid 
+    uid:  # enter youyan uid 
   livere:
     uid: # enter youyan uid 
   gitment:
-    githubID: 
-    repo: 
-    ClientID: 
-    ClientSecret: 
+    githubID: StoneMa
+    repo: stonema.github.io
+    ClientID: 4608e70eb68ef801564b
+    ClientSecret: b2bb4412e880a4607ee3ee4baaee7239886de18d
     lazy: false
 
 # douban 豆瓣书单
@@ -138,7 +138,7 @@ douban:
 # PV
 pv:
   busuanzi:
-    enable: true  # 不蒜子统计
+    enable: false  # 不蒜子统计
   leancloud:
     enable: false  # leancloud统计
     app_id: # leancloud <AppID>
@@ -172,7 +172,7 @@ profile:
   author_title: Computer Science & Software Engineer
   author_description: 吾虽浪迹天涯 却未迷失本心
   location: Tianjin, China
-  follow: https://github.com/StoneMa
+  follow: https://stonema.github.io/
   # Social Links
   social:
     links:

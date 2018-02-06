@@ -1,5 +1,7 @@
 ---
 title: Markdown 语法说明
+categories: 技术
+tags: Markdown
 ---
 ## **宗旨**
 ### Markdown 的目标是实现「易读易写」。
@@ -9,18 +11,27 @@ title: Markdown 语法说明
  < 和 & : <code>&lt</code>; and <code>&amp</code>;
 
 # &copy;  &copy
+## **题目，归类，标签**
+
+title: [题目]
+
+categories: [归类]
+
+tags: [标签]
 
 ## **段落和换行**
-### Atx 形式
-# 这是 H1 #
-
-## 这是 H2 ##
-
-### 这是 H3 ######
 ### Markdown形式
+一级标题: #
+
+二级标题: ##
+
+三级标题: ###
+
+**效果如下：**
 # 一级标题
 ## 二级标题
 ### 三级标题
+
 ## **列表**
 ### **Markdown 支持有序列表和无序列表。**
 

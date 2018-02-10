@@ -206,7 +206,7 @@ profile:
     - TensorFlow
   # My Personal Works
   works:
-    name:
+    Awesome-Threejs:
       link: https://github.com/StoneMa/Awesome-Threejs
       date: 2017
   # My Personal Projects

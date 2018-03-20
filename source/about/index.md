@@ -5,4 +5,4 @@ layout: about
 comments: false
 sidebar: custom
 ---
-个人详细介绍
+吾虽浪迹天涯，却未迷失本心。

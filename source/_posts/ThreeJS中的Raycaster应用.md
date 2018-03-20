@@ -30,7 +30,7 @@ Raycaster是Three.js中的射线，通过它，可以计算出射线与物体的
  3. annotation跟随模型运动，应该是实时渲染的结果。
 ### 解决方法与实现过程：
 #### 1. 加载模型：
-```
+```javascript
     objLoader = new THREE.OBJLoader();
     objLoader.setPath('./obj/');
     objLoader.load('zxj.obj', function (object) {
@@ -58,14 +58,14 @@ Raycaster是Three.js中的射线，通过它，可以计算出射线与物体的
 #### 2.如何才能选中鼠标点击的点？
 在Three.js中还是能找到一些例子的：[Three.js](https://threejs.org/examples)
 __需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击事件，这里切记不要使用全局鼠标事件监听，而是应该一个一个进行绑定，否者会引起html标签中的鼠标事件失效。__
-```
+```javascript
     $('#test').click(onDocumentMouseDown);
     //document.addEventListener('mousedown', onDocumentMouseDown, false); // 这里是个坑啊，一定要注意 鼠标单击事件如果绑定给全局document，其他需要鼠标单击的控件，全部失效
 ```
 ##### 鼠标双击事件：
 鼠标获取的点是屏幕坐标，因屏幕大小而定，这里要改成设备坐标系，也就是把屏幕坐标转换成从-1到1的标准坐标系，然后使用Camera位置和Mouse点击的点来定位射线方向，通过判断射线是否经过模型来实现在模型上添加点。
 我们每次鼠标双击事件就是添加一个热点，所以要将热点存储到一个数组中rays[];
-``` 
+```javascript
     var rays = []; //记录多次双击之后的射线与模型的外表面交点
     var annos = new Array(); //热点定义成数组
     var intersects; // 射线与模型的交点，这里交点会是多个，因为射线是穿过模型的，与模型的所有mesh都会有交点，但我们选取第一个，也就是intersects[0]。
@@ -98,7 +98,7 @@ __需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击
     }
 ```
 这样，就可以把选出来的点放入到rays[]中了。如何给这些点添加样式呢？我们需要有多少个rays交点创建多少个annotation：创建结点，append到页面，并push到annos数组中。
-```
+```javascript
     var div; // 创建anno content的div
     var sp;
     var strong;
@@ -115,7 +115,7 @@ __需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击
     annos.push(div);
 ```
 #### 3.我们使用Ajax向后台传值，把坐标存起来
-```
+```javascript
     $.ajax({
         type: 'POST',
         url: './addAnnos.do',
@@ -148,7 +148,7 @@ __需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击
     });
 ```
 ##### css页面：注意伪dom结点的处理
-```
+```css
     .annos {
       position: absolute;
       top: 0;
@@ -183,7 +183,7 @@ __需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击
 
 #### 4.更新屏幕中annotation的位置：
 annotation的位置是实时渲染的，所以这个方法是对所有的annotation进行位置更新，最终应该放在render渲染器中。
-```
+```javascript
     function updateAnnosPosition() {
         for (var i = 0; i < annos.length; i++){
             var canvas = renderer.domElement;

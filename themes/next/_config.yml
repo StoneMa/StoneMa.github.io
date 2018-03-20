@@ -27,9 +27,9 @@ override: false
 # For example, you put your favicons into `hexo-site/source/images` directory.
 # Then need to rename & redefine they on any other names, otherwise icons from Next will rewrite your custom icons in Hexo.
 favicon:
-  small: /images/favicon-16x16-next.png
-  medium: /images/favicon-32x32-next.png
-  apple_touch_icon: /images/apple-touch-icon-next.png
+  small: /images/avatar.jpg
+  medium: /images/avatar.jpg
+  apple_touch_icon: /images/avatar.jpg
   safari_pinned_tab: /images/logo.svg
   #android_manifest: /images/manifest.json
   #ms_browserconfig: /images/browserconfig.xml
@@ -93,7 +93,7 @@ index_with_subtitle: false
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, question icon will be loaded.
 menu:
   home: / || home
-  tags: /tags/ || tags
+  tags: /tags || tags
   categories: /categories/ || th
   archives: /archives/ || archive
   #schedule: /schedule/ || calendar
@@ -128,7 +128,8 @@ scheme: Muse
 social:
   GitHub: https://github.com/StoneMa || github
   E-Mail: mailto:yingshi.ma@outlook.com || envelope
-  知乎: https://www.zhihu.com/people/Stone.ma || zhihu
+  ZhiHu: https://www.zhihu.com/people/Stone.ma || ZhiHu
+  Weibo: https://weibo.com/5976306075/profile?topnav=1&wvr=6 || Weibo
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook

@@ -29,7 +29,7 @@ Hexo作为一个优秀的静态博客框架，与传统的博客网站不同的�
 *	source分支来管理Hexo博客的工作空间
 ###3.具体步骤：
 1. 在blog根目录初始化仓库，并切换到source分支，关联远程仓库，并push到远程仓库的source分支，这里会忽略 ignore掉的文件夹。
-```
+```bash 
 cd blog
 git init //在当前目录下初始化git仓库
 git checkout -b source //新建一个source分支，并切换到该分之下
@@ -43,11 +43,11 @@ git push origin source //将本地更新push到远程库
 
 2. 将远程内容同步到另外一台机器 B主机
 在另外一台电脑上，先把node环境配好，安装hexo。同时找个位置建立一个Blog的根目录文件夹。
-``` 
+```bash 
 npm install hexo-cli -g
 ```
 安装好Hexo后，注意不要进行初始化，因为这样又会生成Hexo的新的配置文件，而我们所需的内容都在source分支上管理，所以这里直接进行如下操作：
-```
+```bash 
 git clone -b source git@github.com:username/username.github.io.git
 cd username.github.io // packeage.json在clone下来的项目目录中
 npm install //根据package.json来下载依赖包，这也是为什么我们不需要同步node_modules中的内容的原因!
@@ -56,7 +56,7 @@ npm install //根据package.json来下载依赖包，这也是为什么我们不
 >这时我们已经有了远程的.md文件，也就是博客的源文件，到这里，我们A端，git服务器端，以及B端，已经有相同的工作空间与blog源文件内容了。（B端还没有Hexo g，所以没有public目录，没有Hexo d所以没有deploy文件，）
 
 3.	我们可以开始在B终端写博客了
-```
+```bash 
 hexo new "about hexo sync"
 hexo generate
 hexo deploy
@@ -67,13 +67,13 @@ git push origin source
 4.	记住：以后git push的时候都要在source分支下，并且向source分支push，不需要在master分支做任何操作）。
 
 5.	B端上传博客并发布后，回到A端，同样再到source分支下进行同步。
-```
+```bash 
 git checkout source
 git pull
 
 ```
 6. 然后在A端同样写博客：
-```
+```bash 
 hexo new "about hexo sync again"
 hexo generate
 hexo deploy

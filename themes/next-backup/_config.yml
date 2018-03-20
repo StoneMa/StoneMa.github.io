@@ -27,9 +27,9 @@ override: false
 # For example, you put your favicons into `hexo-site/source/images` directory.
 # Then need to rename & redefine they on any other names, otherwise icons from Next will rewrite your custom icons in Hexo.
 favicon:
-  small: /images/favicon.png
-  medium: /images/favicon.png
-  apple_touch_icon: /images/apple-touch-icon-next.png
+  small: /images/avatar.jpg
+  medium: /images/avatar.jpg
+  apple_touch_icon: /images/avatar.jpg
   safari_pinned_tab: /images/logo.svg
   #android_manifest: /images/manifest.json
   #ms_browserconfig: /images/browserconfig.xml
@@ -93,22 +93,16 @@ index_with_subtitle: false
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, question icon will be loaded.
 menu:
   home: / || home
-  about: /about/ || user
-  tags: /tags/ || tags
+  tags: /tags || tags
   categories: /categories/ || th
   archives: /archives/ || archive
   #schedule: /schedule/ || calendar
   #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat
-
+  about: /about/ || user
 # Enable/Disable menu icons.
 menu_icons:
   enable: true
-  home: home
-  about: user
-  categories: th
-  tags: tags
-  archives: archive
 
 
 # ---------------------------------------------------------------
@@ -116,9 +110,9 @@ menu_icons:
 # ---------------------------------------------------------------
 
 # Schemes
-#scheme: Muse
+scheme: Muse
 #scheme: Mist
-scheme: Pisces
+#scheme: Pisces
 #scheme: Gemini
 
 
@@ -134,6 +128,8 @@ scheme: Pisces
 social:
   GitHub: https://github.com/StoneMa || github
   E-Mail: mailto:yingshi.ma@outlook.com || envelope
+  ZhiHu: https://www.zhihu.com/people/Stone.ma || zhihu
+  Weibo: https://weibo.com/5976306075/profile?topnav=1&wvr=6 || Weibo
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -159,7 +155,7 @@ links_layout: block
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
 # in site  directory(source/uploads): /uploads/avatar.gif
-avatar: /images/favicon.png
+avatar: /images/avatar.jpg
 
 # Table Of Contents in the Sidebar
 toc:
@@ -347,8 +343,8 @@ font:
 
 # MathJax Support
 mathjax:
-  enable: false
-  per_page: false
+  enable: true
+  per_page: true
   cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
 
 # Han Support docs: https://hanzi.pro/

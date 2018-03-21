@@ -135,7 +135,6 @@ social:
   GitHub: https://github.com/StoneMa || github
   E-Mail: mailto:yingshi.ma@outlook.com || envelope
   微博: https://weibo.com/u/5976306075 || weibo
-  豆瓣: https://www.douban.com/people/mayingshi
   知乎: https://www.zhihu.com/people/Stone.ma
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
@@ -314,7 +313,7 @@ font:
   # Global font settings used on <body> element.
   global:
     external: true
-    family: Lato
+    family: Arial
     size:
 
   # Font settings for Headlines (h1, h2, h3, h4, h5, h6).
@@ -350,8 +349,8 @@ font:
 
 # MathJax Support
 mathjax:
-  enable: false
-  per_page: false
+  enable: true
+  per_page: true
   cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
 
 # Han Support docs: https://hanzi.pro/

@@ -313,7 +313,7 @@ font:
   # Global font settings used on <body> element.
   global:
     external: true
-    family: Arial
+    family: Microsoft YaHei
     size:
 
   # Font settings for Headlines (h1, h2, h3, h4, h5, h6).
@@ -339,7 +339,7 @@ font:
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family:
+    family: Ubuntu
     size:
 
 

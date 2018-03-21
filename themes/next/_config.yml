@@ -223,8 +223,8 @@ excerpt_description: true
 # Automatically Excerpt. Not recommend.
 # Please use <!-- more --> in the post to control excerpt accurately.
 auto_excerpt:
-  enable: false
-  length: 150
+  enable: true
+  length: 200
 
 # Post meta display settings
 post_meta:
@@ -339,7 +339,7 @@ font:
   # Font settings for <code> and code blocks.
   codes:
     external: true
-    family: Ubuntu
+    family: Consolas
     size:
 
 

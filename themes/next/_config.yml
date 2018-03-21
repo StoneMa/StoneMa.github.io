@@ -340,7 +340,7 @@ font:
   codes:
     external: true
     family: Consolas
-    size:
+    size: 14
 
 
 # ---------------------------------------------------------------

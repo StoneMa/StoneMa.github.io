@@ -1,5 +1,5 @@
 ---
-title: JS循环绑定clink事件
+title: JS循环绑定click事件
 date: 2018-03-22 14:29:19
 tags: [JS,前端]
 categories: JS

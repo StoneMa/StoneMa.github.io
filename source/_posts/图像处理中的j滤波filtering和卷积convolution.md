@@ -1,5 +1,5 @@
 ---
-title: 图像处理中的j滤波filtering和卷积convolution
+title: 图像处理中的滤波filtering和卷积convolution
 date: 2018-04-08 14:57:50
 tags: [滤波,卷积]
 categories: 图形图像
@@ -8,7 +8,7 @@ categories: 图形图像
 
 滤波操作和卷积操作，实际都是用一个矩阵和原矩阵进行对应位置乘积做和。
 
-### 滤波操作: $Filtering$
+### 滤波操作: Filtering
 
 **滤波操作不改变原图像矩阵的大小**
 
@@ -35,7 +35,7 @@ $$
 
 ![滤波](./flower.png)
 
-### 卷积操作: $convolution$
+### 卷积操作: Convolution
 
 **卷积操作会改变图像大小**
 

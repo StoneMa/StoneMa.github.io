@@ -1,15 +1,21 @@
 ---
-title: HarrisCornerDetection
+title: Harris Corner Detection
 date: 2018-04-10 16:50:40
 tags: [特征提取, 图形, 图像]
 categories: 图像处理
 mathjax: true
 ---
 ## 上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）
-上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这个领域到底跟美国有多大差距啊！！），Chris Harris＆Mike Stephens早期在其论文《A Combined Corner and Edge Detector》中就尝试去发现了这些角落，并把它称为Harris Corner Detector。他把这个简单的想法变成了一种数学形式。而且它基本上找到了（u，v）在各个方向上位移后的亮度差。这个表达式如下：
+上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这个领域到底跟美国有多大差距啊！！），Chris Harris＆Mike Stephens早期在其论文《A Combined Corner and Edge Detector》中就尝试去发现了这些角落，并把它称为Harris Corner Detector。Harris角点检测是通过数学计算在图像上发现角点特征的一种算法，而且其具有旋转不变性的特质。它的原理就是找到滑动窗口内的点，然后这个点向各个方向上的亮度差最明显的地方（实际就是一阶导数最大的地方）。OpenCV中的Shi-Tomasi角点检测就是基于Harris角点检测改进算法。
+![corner](./Harris_Corner.jpg)
+
+他把这个简单的想法变成了一种数学形式。这个表达式如下：
 
 $$E(u,v) = \sum_{x,y}\underbrace{w(x,y)}_{window function}[\underbrace{I(x+u,y+v)}_{shifted intensity} - \underbrace{I(x,y)}_{intensity}]^2$$
 
+*其中 $W(x, y)$ 表示移动窗口，$I(x, y)$ 表示像素灰度值强度，范围为 0～255。根据泰勒级数*
+
+计算一阶到N阶的偏导数，最终得到一个Harris矩阵公式：
 Window function是给对应的 $x,y$ 像素加权的矩形窗口或高斯窗口。对于角点检测，我们必须使得$E(u,v)$取得最大值。这样就意味着，对于上面的公式，我们必须使得等号后的第二项最大化（中括号内的项），运用泰勒展开式并使用一些数学过程，我们能够最终得到下列方程：
 
 $$
@@ -55,7 +61,8 @@ and
 
 ![image](./harris_region.jpg)
 
-所以，哈里斯角点（角落）检测的结果是一个具有得分数的灰度图像。合适的阈值会帮助我们找到图像中的角点。我们将会以一个简单的例子说明。
+上图中的横向和纵向分别可以看作是$\lambda_{1}$ 和 $\lambda_{2}$ 的坐标，不要把当作是个正方形。
+哈里斯角点（角落）检测的结果是一个具有得分数的灰度图像。合适的阈值会帮助我们找到图像中的角点。我们将会以一个简单的例子说明。
 
 ## Harris Corner Detector 在 OpenCV 中的应用
 

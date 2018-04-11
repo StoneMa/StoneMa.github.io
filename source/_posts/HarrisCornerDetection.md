@@ -55,4 +55,66 @@ and
 
 ![image](./harris_region.jpg)
 
-所以，哈里斯角点（角落）检测的结果是一个具有得分数的灰度图像。
+所以，哈里斯角点（角落）检测的结果是一个具有得分数的灰度图像。合适的阈值会帮助我们找到图像中的角点。我们将会以一个简单的例子说明。
+
+## Harris Corner Detector 在 OpenCV 中的应用
+
+OpenCV中有``cv.cornerHarris()``,它的参数分别是：
+* img - Input image, 应该是32位的灰度图.
+* blockSize - 考虑角点检测的邻域的大小.
+* ksize - 使用Sobel导数的光圈参数
+* k - 方程中Harris detector的自由参数.
+
+## example：
+```python
+import numpy as np
+import cv2 as cv
+filename = 'chessboard.png'
+img = cv.imread(filename)
+gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+gray = np.float32(gray)
+dst = cv.cornerHarris(gray,2,3,0.04)
+#result is dilated for marking the corners, not important
+dst = cv.dilate(dst,None)
+# Threshold for an optimal value, it may vary depending on the image.
+img[dst>0.01*dst.max()]=[0,0,255]
+cv.imshow('dst',img)
+if cv.waitKey(0) & 0xff == 27:
+    cv.destroyAllWindows()
+```
+
+结果如下：
+
+![image](./harris_result.jpg)
+
+## Corner with SubPixel Accuracy (具有子像素准确度的角点)
+有时候，你可能需要以最高的精度找到角点，OpenCV提供了可以进一步细化像素检测角点的函数``cv.cornerSubPix()``，首先还是要先找到 Harris Corner 然后通过这些角点的质心来优化它们,下图中，Harris Corner是红色像素，精确角点为绿色像素。我们指定迭代次数或达到一定的准确度后停止，（二者以先发生者为准）。我们还需要定义要搜索拐角的邻域的大小。
+```python
+import numpy as np
+import cv2 as cv
+filename = 'chessboard2.jpg'
+img = cv.imread(filename)
+gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+# find Harris corners
+gray = np.float32(gray)
+dst = cv.cornerHarris(gray,2,3,0.04)
+dst = cv.dilate(dst,None)
+ret, dst = cv.threshold(dst,0.01*dst.max(),255,0)
+dst = np.uint8(dst)
+# find centroids
+ret, labels, stats, centroids = cv.connectedComponentsWithStats(dst)
+# define the criteria to stop and refine the corners
+criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+corners = cv.cornerSubPix(gray,np.float32(centroids),(5,5),(-1,-1),criteria)
+# Now draw them
+res = np.hstack((centroids,corners))
+res = np.int0(res)
+img[res[:,1],res[:,0]]=[0,0,255]
+img[res[:,3],res[:,2]] = [0,255,0]
+cv.imwrite('subpixel5.png',img)
+
+```
+
+结果如下： （一些关键点可能需要放大来看）
+
+![subpixel3](./subpixel3.png)

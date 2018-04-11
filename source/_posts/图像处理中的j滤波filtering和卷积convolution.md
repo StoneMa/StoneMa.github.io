@@ -3,6 +3,7 @@ title: 图像处理中的滤波filtering和卷积convolution
 date: 2018-04-08 14:57:50
 tags: [滤波,卷积]
 categories: 图形图像
+mathjax: true
 ---
 ### 很多人认为卷积就是滤波，两者并无区别，其实不然。两者在原理上相似，但是在实现的细节上存在一些区别。
 

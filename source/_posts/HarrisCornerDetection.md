@@ -141,3 +141,10 @@ $$E(u,v) = \sum_{x,y}\underbrace{w(x,y)}_{window function}[\underbrace{I(x+u,y+v
 
 这两个结合使用就可以选出角点（图像上拐角的地方）。
 
+## 问题与后续发展
+* 后续又出现了Harris Corner的改进版：Shi-Tomasi Corner Detection
+* Harris Corner是旋转不变的，但是不是尺度不变的，因为探测窗口的大小不变的情况下，放大图像后，原来的角点有可能变成平滑的,如下图：
+
+![sift](./sift_scale_invariant.jpg)
+
+* 为了找到旋转，尺度都不变的探测器，由此诞生了SIFT。

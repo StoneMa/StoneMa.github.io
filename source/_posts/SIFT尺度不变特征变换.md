@@ -44,13 +44,13 @@ DoG 对图像的边缘也有很高的响应，所以也要想办法把图像边�
 # Keypoint Descriptor 关键点描述符
 找到了关键点的梯度方向，下一步就是要描述这些关键点了，与求该点主方向不同的是，如下图中的左侧，关键点划分成16x16的区域，它被划分为16个4x4的子块。
 ![keypoint](./Keypoint.jpg)
-下一步工作就是，针对每一个4x4的子块，创建一个具有8个方向（每隔45°一个方向）的直方图，即这个区域的8个方向的梯度强度。这样16个子块就会有 $8*16=128$ 个梯度强度信息数据，这也就是SIFT的128维特征矢量。
+下一步工作就是，针对每一个4x4的子块，创建一个具有8个方向（每隔45°一个方向）的直方图，即这个区域的8个方向的梯度强度。这样16个子块就会有 ``8x16=128`` 个梯度强度信息数据，这也就是SIFT的128维特征矢量。
 *除此之外，还采取了几项措施来实现对光照变化，旋转等的鲁棒性。*
 # Keypoint Matching 关键点匹配
 两幅图像之间的关键点的匹配工作是通过判断他们的最近邻域来实现的。但在某些情况下，第二最近邻域可能比最近邻域匹配的更好。（这个地方该怎么翻译？总感觉不对 *Keypoints between two images are matched by identifying their nearest neighbours. But in some cases, the second closest-match may be very near to the first.*）这可能是由于噪音或其他原因产生的。在这种情况下，需要计算最近距离与第二近距离的比值，如果这个比值大于0.8，则这个第二最近距离就被舍弃。
 这个理解如下：
 ![pointmatch](./pointmatch.jpg)
-计算量上，如果我们有10个待匹配点，那么计算量就是10^2;
+计算量上，如果我们有10个待匹配点，那么计算量就是$10^{2}$;
 # 使用
 SIFT被申请了专利，所以原文中的算法放在了[the opencv contrib repo](https://github.com/opencv/opencv_contrib)。
 ```python

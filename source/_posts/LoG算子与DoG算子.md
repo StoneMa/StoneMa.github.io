@@ -77,5 +77,5 @@ subplot(122)
 surf(-laplace_gaussian_filter);
 ```
 ![LoG](./LoG算子.png)
-
+## 参考：
 * [边缘检测滤波器](https://www.jianshu.com/p/2ac784fd22fc)

@@ -1,7 +1,7 @@
 ---
 title: SIFT尺度不变特征变换
 date: 2018-04-12 14:22:00
-tags: [SIFT,特征提取]
+tags: [SIFT,特征描述]
 categories: 图像处理
 mathjax: true
 ---

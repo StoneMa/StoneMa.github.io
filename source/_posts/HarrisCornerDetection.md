@@ -1,7 +1,7 @@
 ---
 title: Harris Corner Detection
 date: 2018-04-10 16:50:40
-tags: [特征提取, 图形, 图像]
+tags: [特征提取, 图形, 图像,角检测]
 categories: 图像处理
 mathjax: true
 ---

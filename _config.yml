@@ -104,3 +104,5 @@ deploy:
   type: git
   repo: git@github.com:StoneMa/StoneMa.github.io.git
   branch: master
+  
+creative_commons: by-nc-sa

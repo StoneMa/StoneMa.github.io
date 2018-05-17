@@ -18,7 +18,7 @@ OpenCV是一个跨平台计算机视觉库，可以运行在Linux、Windows、An
 ![opencv](./opencv0.png)
 Documentation是OpenCV的使用手册，source是源码，Win pack是编译后的opencv自解压包，我们这里可以选择下载源码或者下载编译后的自解压包。二者最基本的区别就是：前者需要我们本地编译，后者可以直接使用。我们将两个文件都下载下来:
 ![opencv3.3](./opencv1.png)
-### 1.2 自解压包的安装与配置
+### 1.2 方法一：自解压包的安装与配置
 下载完成后的exe文件直接运行，就是自解压过程
 ![exe](./opencv2.png)
 选择好目标文件夹（**这里注意路径中不要有中文**），解压完成后得到如下文件：
@@ -81,3 +81,15 @@ int mainOne()
 	return 0;
 }
 ```
+## 1.3 方法二：本地编译再配置
+找到前面下载的源码版的opencv，同时下载并安装cmake工具到本机。
+然后查看这个文件夹，可以看到有cmakelists文件，这个就是cmake需要用的编译文件
+![opencv7](./opencv7.png)
+然后选择source code和要build到的文件夹：
+![opencv8](./opencv8.png)
+点击configure
+![opencv9](./opencv9.png)
+选择本机的 VS2015 Win64,然后Finish，这个过程是生成VS2015的opencv环境，并检验本机的vs环境对于opencv的必要依赖是否完整，这个过程需要一段时间,完成后，选择你需要build的文件，然后再点击Configure开始编译：
+![10](./opencv10.png)
+然后点击Generate开始生成链接库，完成后就会发现build文件夹内已经存在了opencv的工程sln。
+![11](./opencv11.png)

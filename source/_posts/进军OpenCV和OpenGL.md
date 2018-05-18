@@ -81,7 +81,7 @@ int mainOne()
 	return 0;
 }
 ```
-## 1.3 方法二：本地编译再配置
+### 1.3 方法二：本地编译再配置
 找到前面下载的源码版的opencv，同时下载并安装cmake工具到本机。
 然后查看这个文件夹，可以看到有cmakelists文件，这个就是cmake需要用的构建工程的文件
 ![opencv7](./opencv7.png)

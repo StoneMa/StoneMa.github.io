@@ -83,13 +83,28 @@ int mainOne()
 ```
 ## 1.3 方法二：本地编译再配置
 找到前面下载的源码版的opencv，同时下载并安装cmake工具到本机。
-然后查看这个文件夹，可以看到有cmakelists文件，这个就是cmake需要用的编译文件
+然后查看这个文件夹，可以看到有cmakelists文件，这个就是cmake需要用的构建工程的文件
 ![opencv7](./opencv7.png)
 然后选择source code和要build到的文件夹：
 ![opencv8](./opencv8.png)
 点击configure
 ![opencv9](./opencv9.png)
-选择本机的 VS2015 Win64,然后Finish，这个过程是生成VS2015的opencv环境，并检验本机的vs环境对于opencv的必要依赖是否完整，这个过程需要一段时间,完成后，选择你需要build的文件，然后再点击Configure开始编译：
+选择本机的 VS2015 Win64,然后Finish，这个过程是生成VS2015的opencv环境，并检验本机的vs环境对于opencv的必要依赖是否完整，这个过程需要一段时间,完成后，选择你需要build的文件，然后再点击Configure开始构建：
 ![10](./opencv10.png)
 然后点击Generate开始生成链接库，完成后就会发现build文件夹内已经存在了opencv的工程sln。
 ![11](./opencv11.png)
+然后打开这个工程，找到CMakeTargets文件夹内的ALL_BUILD，进行编译：右键->生成，这个过程持续一段时间。编译完成后，再找到CMakeTargets文件夹内的INSTALL工程，再次执行生成，这样整个OpenCV的编译工作就完成了，生成了对应的动态链接库和可执行文件。可以看到在build文件夹内的的install文件夹为编译生成的文件：
+![opencv16](./opencv16.png)
+我们对比一下编译完成的OpenCV 和官方的自解压版本中的内容：
+![opencv17](./opencv17.png)
+![opencv18](./opencv18.png)
+可以看到编译版本比自解压版多一些链接库和lib文件。但是同时缺少 opencv_world***.dll/opencv_world***.lib
+后面的操作就和自解压版相同，如果需要使用编译版本的OpenCV，就需要把环境变量配置成刚刚编译好的内容，同时设置VS中的属性页即可。
+
+
+---
+**PS:** 我在前面的执行cmake的过程中，多勾选了BUILD_openc_world 和 WITH_QT 导致在VS中编译OpenCV源码的过程中出现了很多错误：
+![opencv13](./opencv13.png)
+![opencv14](./opencv14.png)
+![opencv15](./opencv15.png)
+至今不知道如何解决，感觉是本机的QT配置有问题。

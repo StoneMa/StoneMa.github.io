@@ -98,7 +98,7 @@ int mainOne()
 我们对比一下编译完成的OpenCV 和官方的自解压版本中的内容：
 ![opencv17](./opencv17.png)
 ![opencv18](./opencv18.png)
-可以看到编译版本比自解压版多一些链接库和lib文件。但是同时缺少 opencv_world***.dll/opencv_world***.lib
+可以看到编译版本比自解压版多一些链接库和lib文件。但是同时缺少 opencv_world\*\*\*.dll 以及 opencv_world\*\*\*.lib
 后面的操作就和自解压版相同，如果需要使用编译版本的OpenCV，就需要把环境变量配置成刚刚编译好的内容，同时设置VS中的属性页即可。
 
 

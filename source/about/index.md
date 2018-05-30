@@ -13,4 +13,4 @@ type: "about"
 
 --- 吾虽浪迹天涯，却未迷失本心。
 
-![yasuo](./index/yasuo.jpg)
+![ys](index/yasuo.jpg)

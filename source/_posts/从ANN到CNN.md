@@ -233,3 +233,207 @@ if __name__ == "__main__":
 分割线函数：y =  3.0064615780789095 x +( -2.8581812250111303 )
 ```
 ![percptron](./python0.png)
+## 异或问题-增加非线性项
+异或问题不是线性可以求解的，解决方式有增加非线性项。
+问题例如：平面上的点(0,0), (1,1) 对应的数据标签为-1，平面上的点(0,1), (1,0) 对应的数据标签为 1，构造单层感知器以区分两类数据点。
+```python
+'''
+异或问题的解决方式有：增加非线性项:
+     输入x1,x2；
+     增加x1^2,x1*x2,x2^2
+'''
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+n = 0            #迭代次数
+lr = 0.11        #学习速率
+
+#输入数据分别:偏置值,x1,x2,x1^2,x1*x2,x2^2
+X = np.array([[1,0,0,0,0,0],
+              [1,0,1,0,0,1],
+              [1,1,0,1,0,0],
+              [1,1,1,1,1,1]])
+
+#标签
+Y = np.array([-1,1,1,-1])
+
+# 权重初始化，取值范围-1到1
+W = (np.random.random(X.shape[1])-0.5)*2
+print('初始化权值：',W)
+
+def get_show():
+    # 正样本
+    x1 = [0, 1]
+    y1 = [1, 0]
+    # 负样本
+    x2 = [0,1]
+    y2 = [0,1]
+    xdata = np.linspace(-1, 2)
+    plt.figure()
+    plt.plot(xdata, get_line(xdata,1), 'r')
+    plt.plot(xdata, get_line(xdata,2), 'r')
+    plt.plot(x1, y1, 'bo')
+    plt.plot(x2, y2, 'yo')
+    plt.show()
+
+def get_line(x,root):
+    a = W[5]
+    b = W[2] + x*W[4]
+    c = W[0] + x*W[1] + x*x*W[3]
+    if root == 1:
+        return (-b+np.sqrt(b*b-4*a*c))/(2*a)
+    if root == 2:
+        return (-b-np.sqrt(b*b-4*a*c))/(2*a)
+
+#更新权值函数
+def get_update():
+    global X,Y,W,lr,n
+    n += 1
+    #新输出：X与W的转置相乘，得到的结果再由阶跃函数处理，得到新输出
+    new_output = np.dot(X,W.T)
+    #调整权重: 新权重 = 旧权重 + 改变权重
+    new_W = W + lr*((Y-new_output.T).dot(X))/int(X.shape[0])
+    W = new_W
+
+def main():
+    for _ in range(10000):
+        get_update()
+    get_show()
+    last_output = np.dot(X,W.T)
+    print('最后逼近值：',last_output)
+
+if __name__ == "__main__":
+    main()
+```
+**输出结果：**
+```
+初始化权值： [ 0.53493581  0.84054602 -0.49422516  0.86122222 -0.84342568 -0.57384193]
+最后逼近值： [-1.  1.  1. -1.]
+```
+图像：
+![python1.png](./python1.png)
+## Python实现简单的感知器学习规则以分类鸢尾花数据集分类。
+我们将从[UCI Machine Learning Repository](https://link.jianshu.com/?t=http%3A%2F%2Farchive.ics.uci.edu%2Fml%2F)载入鸢尾花数据集，并只关注Setosa 和Versicolor两种花。此外，为了可视化，我们将只使用两种特性：萼片长度（sepal length ）和花片长度（petal length）。
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from mlxtend.plotting import plot_decision_regions
+
+class Perceptron(object):
+  def __init__(self, eta=0.01, epochs=50):
+    self.eta = eta
+    self.epochs = epochs
+
+  def train(self, X, y):
+    self.w_ = np.zeros(1 + X.shape[1])
+    self.errors_ = []
+    for _ in range(self.epochs):
+      errors = 0
+      for xi, target in zip(X, y):
+        update = self.eta * (target - self.predict(xi))
+        self.w_[1:] +=  update * xi
+        self.w_[0] +=  update
+        errors += int(update != 0.0)
+      self.errors_.append(errors)
+    return self
+
+  def net_input(self, X):
+    return np.dot(X, self.w_[1:]) + self.w_[0]
+
+  def predict(self, X):
+    return np.where(self.net_input(X) >= 0.0, 1, -1)
+
+
+df = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data', header=None)
+
+# setosa and versicolor
+y = df.iloc[0:100, 4].values
+y = np.where(y == 'Iris-setosa', -1, 1)
+
+# sepal length and petal length
+X = df.iloc[0:100, [0,2]].values
+
+
+ppn = Perceptron(epochs=10, eta=0.1)
+ppn.train(X, y)
+print('Weights: %s' % ppn.w_)
+
+plot_decision_regions(X, y, clf=ppn)
+plt.title('Perceptron')
+plt.xlabel('sepal length [cm]')
+plt.ylabel('petal length [cm]')
+plt.show()
+
+plt.plot(range(1, len(ppn.errors_)+1), ppn.errors_, marker='o')
+plt.xlabel('Iterations')
+plt.ylabel('Missclassifications')
+plt.show()
+```
+**输出：**
+Weights: [-0.4  -0.68  1.82]
+**图像：**
+![python2](python2.png)
+![python3](python3.png)
+## 感知器存在的问题
+* 尽管感知器完美地分辨出两种鸢尾花类，但收敛是感知器的最大问题之一。 Frank Rosenblatt在数学上证明了当两个类可由线性超平面分离时，感知器的学习规则收敛，但当类无法由线性分类器完美分离时，问题就出现了。为了说明这个问题，我们将使用鸢尾花数据集中两个不同的类和特性。
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from mlxtend.plotting import plot_decision_regions
+
+class Perceptron(object):
+  def __init__(self, eta=0.01, epochs=50):
+    self.eta = eta
+    self.epochs = epochs
+
+  def train(self, X, y):
+    self.w_ = np.zeros(1 + X.shape[1])
+    self.errors_ = []
+    for _ in range(self.epochs):
+      errors = 0
+      for xi, target in zip(X, y):
+        update = self.eta * (target - self.predict(xi))
+        self.w_[1:] +=  update * xi
+        self.w_[0] +=  update
+        errors += int(update != 0.0)
+      self.errors_.append(errors)
+    return self
+
+  def net_input(self, X):
+    return np.dot(X, self.w_[1:]) + self.w_[0]
+
+  def predict(self, X):
+    return np.where(self.net_input(X) >= 0.0, 1, -1)
+
+
+df = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data', header=None)
+
+# versicolor and virginica
+y2 = df.iloc[50:150, 4].values
+y2 = np.where(y2 == 'Iris-virginica', -1, 1)
+
+# sepal width and petal width
+X2 = df.iloc[50:150, [1,3]].values
+
+ppn = Perceptron(epochs=25, eta=0.01)
+ppn.train(X2, y2)
+
+plot_decision_regions(X2, y2, clf=ppn)
+plt.show()
+
+plt.plot(range(1, len(ppn.errors_)+1), ppn.errors_, marker='o')
+plt.xlabel('Iterations')
+plt.ylabel('Missclassifications')
+plt.show()
+print('Total number of misclassifications: %d of 100' % (y2 != ppn.predict(X2)).sum())
+```
+**输出：**
+```Total number of misclassifications: 43 of 100```
+![python4](./python4.png)
+![python5](./python5.png)
+* 在较低的学习率情形下，因为一个或多个样本在每一次迭代总是无法被分类造成学习规则不停更新权值，最终，感知器还是无法找到一个好的决策边界。
+* 感知器算法的另一个缺陷是，一旦所有样本均被正确分类，它就会停止更新权值，这看起来有些矛盾。直觉告诉我们，具有大间隔的决策面（如下图中虚线所示）比感知器的决策面具有更好的分类误差。但是诸如“Support Vector Machines”之类的大间隔分类器不在本次讨论范围。
+![python6](./python6.png)

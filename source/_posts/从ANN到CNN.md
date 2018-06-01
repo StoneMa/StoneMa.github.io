@@ -90,20 +90,29 @@ $$
   * 计算输出值；
   * 更新权值；
 输出值就是根据我们早先定义的 **激活函数** 或者 **阶跃函数** 预测的类标签$(output = g(z))$,（关于激活函数，我们下面会讲到）并且权值的更新可以写成：
-$$w_{j} = w_{j} + \vartriangle w_{j} \tag{$8$}$$
+$$
+w_{j} = w_{j} + \vartriangle w_{j} \tag{$8$}
+$$
 对于每个权值的增量，权值的更新值可以由如下学习规则得到：
-$$\vartriangle w_{j} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{j} \tag{&9&}$$ 
+$$
+\vartriangle w_{j} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{j} \tag{9}
+$$ 
 其中 $\eta$ 表示学习速率（0.0和1.0之间的常数），“target”表示真实标签，“output”表示预测标签。需要注意的是，权值向量内的所有权值同步更新。具体来说，对于一个2维数据集，以如下方式描述更新：
-$$\vartriangle w_{0} = \eta (target^{(i)} - output^{(i)}) \tag{&10&}$$
-$$\vartriangle w_{1} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{1} \tag{&11&}$$
-$$\vartriangle w_{2} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{2} \tag{&12&}$$ 
-
+$$
+\vartriangle w_{0} = \eta (target^{(i)} - output^{(i)}) \tag{10}
+$$
+$$
+\vartriangle w_{1} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{1} \tag{11}
+$$
+$$
+\vartriangle w_{2} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{2} \tag{12}
+$$ 
 设想一下，这种学习规则，如果感知器正确分类，则权值保持不变：
-$$\vartriangle w_{(j)} = \eta (-1^{(i)} -- 1^{(i)})x^{(i)}_{j} = 0 \tag{&13&}$$
-$$\vartriangle w_{(j)} = \eta (1^{(i)} - 1^{(i)})x^{(i)}_{j} = 0 \tag{&14&}$$
+$$\vartriangle w_{(j)} = \eta (-1^{(i)} -- 1^{(i)})x^{(i)}_{j} = 0 \tag{13}$$
+$$\vartriangle w_{(j)} = \eta (1^{(i)} - 1^{(i)})x^{(i)}_{j} = 0 \tag{14}$$
 但是。如果感知器分类错误，那么权值会向正确“方向”调整：
-$$\vartriangle w_{(j)} = \eta (1^{(i)} -- 1^{(i)})x^{(i)}_{j} = \eta (2)x^{(i)}_{j} \tag{&15&}$$
-$$\vartriangle w_{(j)} = \eta (-1^{(i)} - 1^{(i)})x^{(i)}_{j} = \eta (-2)x^{(i)}_{j} \tag{&16&}$$
+$$\vartriangle w_{(j)} = \eta (1^{(i)} -- 1^{(i)})x^{(i)}_{j} = \eta (2)x^{(i)}_{j} \tag{15}$$
+$$\vartriangle w_{(j)} = \eta (-1^{(i)} - 1^{(i)})x^{(i)}_{j} = \eta (-2)x^{(i)}_{j} \tag{16}$$
 这就是权值更新的详细过程，需要注意的是，这种感知器或者神经元分类针对的都是线性可分数据，这样才能保证感知器是收敛的，如果这两个类别是线性不可分的。为了避免死循环，我们可以设置一个训练集的最大训练次数，或者是设置一个可接受误分类个数的阈值。（关于线性可分数据，下面会详细介绍）
 ### 人工神经网络(ANN)
 ![ANN](./ANN.png)

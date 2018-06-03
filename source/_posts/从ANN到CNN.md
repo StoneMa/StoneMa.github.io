@@ -155,7 +155,7 @@ $$ f(z) = \frac{1}{1+e^{-x}}$$
 $$f(z) = tanh(z) = \frac{sinh(x)}{cosh(x)} = \frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$$
 其中
 $$sinh(x) = \frac{e^{x}-e^{-x}}{2}; cosh(x) = \frac{e^{x}+e^{-x}}{2}$$
-![tanh](./tanh.png)
+![tanh](./Tanh.png)
 * $\boldsymbol {ReLU\ function (Rectified Linear Unit)}$
 $$\phi(x) = max(0, x)$$
 ![relu](./relu.png)

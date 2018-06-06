@@ -46,7 +46,7 @@ mathjax: true
 通常我们肯定会遇到这样的情况：我们给一组权重$(w^{i})$和函数$f(x)$它可能只能满足某些输入信号从$x^{(i)}$到$y^{(i)}$的映射，并不能适配所以的样本集。那么如何根据已经正确适配或是适配错误的输出来调整我们的$w^{(i)}$呢？这就引入了我们要讲的重点：**学习策略**
 感知器的学习规则是这样的：学习信号等于神经元期望输出的值与实际的输出值的差。
 $$
-Result = desired_{j} - output_{j} \tag{$4$} 
+Result = desired_{j} - output_{j} \tag{$1$} 
 $$
 
 $desired_{j}$表示期望望的输出，$output_{j}$表示实际的输出。$Result$就是误差，然后根据学习信号，就可以对权值进行更新，也就是我们所说的 **学习** 了。
@@ -57,13 +57,13 @@ output_{j} = f(W^{T}_{j} \cdot X) = sgn(W^{T}_{j} \cdot X) =
 \begin{cases}
 1,& W^{T}_{j}X\geqslant0\\
 -1,& W^{T}_{j}X<0\\
-\end{cases} \tag{$5$}
+\end{cases} \tag{$2$}
 $$
 权值的调整：
-$$\vartriangle W_{j} = \eta[desired_{j}-sgn(W^{T}_{j}X)]X \tag{$6$}$$
+$$\vartriangle W_{j} = \eta[desired_{j}-sgn(W^{T}_{j}X)]X \tag{$3$}$$
 这个公式右侧的 $\eta$ 表示学习率。权值的调整值 = 学习率$\times$误差$\times$输入信号。当实际的输出与我们期望的输出一致时，也就是$output = desired$ 权值就不需要再调整了。如果以我们的上述中的（5） 式为例，也就是实际的输出值是 1 或者 -1，所以结果可以简化为：
 $$
-\vartriangle W_{j} = \pm 2\eta X \tag{$7$}
+\vartriangle W_{j} = \pm 2\eta X \tag{$4$}
 $$
 这就是感知器的学习规则。至于学习率 $\eta$ 它的初始化要符合如下规律：
 * 学习率大于零，小于等于１
@@ -77,28 +77,28 @@ $$
 
 输出值就是根据我们早先定义的 **激活函数** 或者 **阶跃函数** 预测的类标签$(output = g(z))$,（关于激活函数，我们下面会讲到）并且权值的更新可以写成：
 $$
-w_{j} = w_{j} + \vartriangle w_{j} \tag{$8$}
+w_{j} = w_{j} + \vartriangle w_{j} \tag{$5$}
 $$
 对于每个权值的增量，权值的更新值可以由如下学习规则得到：
 $$
-\vartriangle w_{j} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{j} \tag{9}
+\vartriangle w_{j} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{j} \tag{6}
 $$ 
 其中 $\eta$ 表示学习速率（0.0和1.0之间的常数），“target”表示真实标签，“output”表示预测标签。需要注意的是，权值向量内的所有权值同步更新。具体来说，对于一个2维数据集，以如下方式描述更新：
 $$
-\vartriangle w_{0} = \eta (target^{(i)} - output^{(i)}) \tag{10}
+\vartriangle w_{0} = \eta (target^{(i)} - output^{(i)}) \tag{7}
 $$
 $$
-\vartriangle w_{1} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{1} \tag{11}
+\vartriangle w_{1} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{1} \tag{8}
 $$
 $$
-\vartriangle w_{2} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{2} \tag{12}
+\vartriangle w_{2} = \eta (target^{(i)} - output^{(i)})x^{(i)}_{2} \tag{9}
 $$ 
 设想一下，这种学习规则，如果感知器正确分类，则权值保持不变：
-$$\vartriangle w_{(j)} = \eta (-1^{(i)} -- 1^{(i)})x^{(i)}_{j} = 0 \tag{13}$$
-$$\vartriangle w_{(j)} = \eta (1^{(i)} - 1^{(i)})x^{(i)}_{j} = 0 \tag{14}$$
+$$\vartriangle w_{(j)} = \eta (-1^{(i)} -- 1^{(i)})x^{(i)}_{j} = 0 \tag{10}$$
+$$\vartriangle w_{(j)} = \eta (1^{(i)} - 1^{(i)})x^{(i)}_{j} = 0 \tag{11}$$
 但是。如果感知器分类错误，那么权值会向正确“方向”调整：
-$$\vartriangle w_{(j)} = \eta (1^{(i)} -- 1^{(i)})x^{(i)}_{j} = \eta (2)x^{(i)}_{j} \tag{15}$$
-$$\vartriangle w_{(j)} = \eta (-1^{(i)} - 1^{(i)})x^{(i)}_{j} = \eta (-2)x^{(i)}_{j} \tag{16}$$
+$$\vartriangle w_{(j)} = \eta (1^{(i)} -- 1^{(i)})x^{(i)}_{j} = \eta (2)x^{(i)}_{j} \tag{12}$$
+$$\vartriangle w_{(j)} = \eta (-1^{(i)} - 1^{(i)})x^{(i)}_{j} = \eta (-2)x^{(i)}_{j} \tag{13}$$
 这就是权值更新的详细过程，需要注意的是，**感知器或者神经元分类针对的都是线性可分数据，这样才能保证感知器是收敛的。**（关于线性不可分数据，下面会详细介绍）
 
 ## 人工神经网络(ANN)

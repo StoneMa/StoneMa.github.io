@@ -23,4 +23,5 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
    模型矩阵定义了如何获取原始模型数据，以及如何在三维世界坐标系中移动模型（ which defines how you take your original model data and move it around in 3d world space.）下一步，为了获取世界坐标系中的坐标，以及将模型移动到剪辑空间中（剪辑空间其实就是我们的可视区域），我们需要投影矩阵，而常用于投影的矩阵是透视矩阵（perspective matrix）它模仿的就是照相机的原理。最后如果需要移动相机，就又需要一个视图矩阵，用来移动相机。
 2. 剪辑空间（裁剪空间 Clipspace）
    剪辑空间也就是我们的可视区域，任何数据位于剪辑空间外的话，则会被剪掉，并且不会渲染。在一个WebGL程序中，模型数据通常会以它自己的坐标系上传到GPU，然后顶点着色器会将这些点转换到不同的坐标系系统下进行渲染。这个空间就是剪辑空间或者叫裁剪空间。
-   [clipspace](./clip-space-graph.svg)
+   [clipspace](./clip-space-graph.png)
+   上图是所有点必须适合的剪辑空间的可视化。它是2个单位宽，由角（-1，-1，-1）到角（1,1,1）的立方体组成。立方体的中间是点（0,0,0）。

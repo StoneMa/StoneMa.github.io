@@ -36,10 +36,103 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
 ## 世界坐标系（World Coordinate System）
 世界坐标系，我们可以看做是一个永恒不变的参考系，所以的其他模型，和各种坐标系都以这个坐标系作为基准。世界坐标系的位置不随模型的变化而改变。
 
-## 模型坐标系
+## 模型坐标系 (Model Coordinate System)
 模型坐标系是建模时所用到的坐标系，模型的原点为(0,0,0),但是它可以是世界坐标系中的任意一点。
 通常在``Three.js``中，我们设置``Object.position.set(0,0,0)``就是将模型的原点设置为世界坐标系的原点。
 * 模型中心设置
-    ``object.children[i].geometry.center();``
-   
-   
+    ``object.children[i].geometry.center(); //将网格模型的中心移动到世界坐标系的中心`` 这样做，对于单一Mesh构成的三维模型能够轻松将模型移动到世界坐标系中央，但是对于多Mesh构成的模型来讲，每个children的Mesh都会被移动到World坐标系原点。
+
+## 如何将加载后处于偏移位置的模型移动到坐标系原点呢？
+
+![原始图](./original.png)
+可以看到上图中的模型，虽然模型坐标系和世界坐标系重合，但是模型的原点却位于三维物体的一个角落，看起来不美观。我们起初的办法是通过设置``object.children[i].geometry.center()``将三维物体的中心移动到模型坐标系原点，但是刚好上图中的模型是单个Mesh构成的三维物体，所以没有发现问题，当使用多Mesh三维模型的时候，上面的方法就会把所有的Mesh移动的模型坐标系中心，使得模型的Mesh混乱，无法显示原来的样子。
+![Mesh混乱](./building.png)
+
+为了修复这个问题，想到的解决办法是：计算三维模型AABB包围盒两个对角点的位置坐标相应方向和的均值，得到的均值后，将模型的position设置到这个点，从而达到将三维物体中心放置到坐标系原点的目的。
+1. 加载三维模型
+    ```javascript
+        objLoader = new THREE.OBJLoader();
+        objLoader.setPath('./obj/');
+        objLoader.load('a.obj', function (object) {
+        oneObj = object;
+        object.traverse(function (child) {
+            if (child.type === "Mesh") {
+                child.geometry.computeBoundingBox();
+                child.geometry.verticesNeedUpdate = true;
+                child.material.side = THREE.DoubleSide;
+                //child.geometry.center(); //设置模型中心点为几何体的中心
+            }
+        });
+        });
+    ```
+2. 构造AABB包围盒
+    ```javascript
+        box = new THREE.BoxHelper(object);
+    ```
+3. 计算包围盒任意两个对角点的均值，并移动模型
+    ```javascript
+        var points = box.geometry.attributes.position.array;
+        obj_x = (points[0]+points[18])/2;
+        obj_y = (points[1]+points[19])/2;
+        obj_z = (points[2]+points[20])/2;
+        oneObj.position.set(-obj_x,-obj_y,-obj_z); //这是移动模型时要反向移动
+    ```
+![moving](./moveBuilding.png)
+
+这样，就解决了模型便宜的问题，但是模型的大小适配问题还在，我们的思路是：获取到模型表面的距离最远的两个点，然后保证这个距离是小于``camera``的``far-near``的，同时这个长度大于``far-near`` x 倍，就相应缩小 n*x倍，n是个放大系数，这里我取值是20。
+实现过程如下：
+```javascript
+        // 获取三维模型表面点的最大距离
+        var box3 = new THREE.Box3();
+        box3.setFromObject(object);
+        var maxLength = box3.getSize(new THREE.Vector3()).length();
+        var consult = (camera.far - camera.near) / (20*maxLength);
+        //写入场景内
+        var currentScale = consult;
+        object.scale.set(currentScale,currentScale,currentScale);
+``` 
+
+## 完整实现过程：
+```javascript
+    //  objLoader
+    objLoader = new THREE.OBJLoader();
+    objLoader.setPath('./obj/');
+    objLoader.load('a.obj', function (object) {
+        oneObj = object;
+        object.traverse(function (child) {
+            if (child.type === "Mesh") {
+                child.geometry.computeBoundingBox();
+                child.geometry.verticesNeedUpdate = true;
+                child.material.side = THREE.DoubleSide;
+                //child.geometry.center(); //设置模型中心点为几何体的中心
+            }
+        });
+        object.name = "zxj";  //设置模型的名称
+        //对模型的大小进行调整
+
+        // object.scale.x =0.001;
+        // object.scale.y =0.001;
+        // object.scale.z =0.001;
+        //object.lookAt(new THREE.Vector3(0,0,0));
+        // 加入模型的aabb包围盒
+        // 获取三维模型表面点的最大距离
+        var box3 = new THREE.Box3();
+        box3.setFromObject(object);
+        var maxLength = box3.getSize(new THREE.Vector3()).length();
+        var consult = (camera.far - camera.near) / (20*maxLength);
+        //写入场景内
+        var currentScale = consult;
+        object.scale.set(currentScale,currentScale,currentScale);
+        box = new THREE.BoxHelper(object);
+        // box.material.transparents = true;
+        // box.material.depthTest = false;
+        // box.visible = true;
+        var points = box.geometry.attributes.position.array;
+        obj_x = (points[0]+points[18])/2;
+        obj_y = (points[1]+points[19])/2;
+        obj_z = (points[2]+points[20])/2;
+        oneObj.position.set(-obj_x,-obj_y,-obj_z);
+        //scene.add(box);
+        scene.add(object);
+    });
+```

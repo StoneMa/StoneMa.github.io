@@ -82,58 +82,60 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
 
 这样，就解决了模型便宜的问题，但是模型的大小适配问题还在，我们的思路是：获取到模型表面的距离最远的两个点，然后保证这个距离是小于``camera``的``far-near``的，同时这个长度大于``far-near`` x 倍，就相应缩小 n*x倍，n是个放大系数，这里我取值是20。
 实现过程如下：
-```javascript
-        // 获取三维模型表面点的最大距离
-        var box3 = new THREE.Box3();
-        box3.setFromObject(object);
-        var maxLength = box3.getSize(new THREE.Vector3()).length();
-        var consult = (camera.far - camera.near) / (20*maxLength);
-        //写入场景内
-        var currentScale = consult;
-        object.scale.set(currentScale,currentScale,currentScale);
-``` 
+
+    ```javascript
+            // 获取三维模型表面点的最大距离
+            var box3 = new THREE.Box3();
+            box3.setFromObject(object);
+            var maxLength = box3.getSize(new THREE.Vector3()).length();
+            var consult = (camera.far - camera.near) / (20*maxLength);
+            //写入场景内
+            var currentScale = consult;
+            object.scale.set(currentScale,currentScale,currentScale);
+    ``` 
 
 ## 完整实现过程：
-```javascript
-    //  objLoader
-    objLoader = new THREE.OBJLoader();
-    objLoader.setPath('./obj/');
-    objLoader.load('a.obj', function (object) {
-        oneObj = object;
-        object.traverse(function (child) {
-            if (child.type === "Mesh") {
-                child.geometry.computeBoundingBox();
-                child.geometry.verticesNeedUpdate = true;
-                child.material.side = THREE.DoubleSide;
-                //child.geometry.center(); //设置模型中心点为几何体的中心
-            }
-        });
-        object.name = "zxj";  //设置模型的名称
-        //对模型的大小进行调整
 
-        // object.scale.x =0.001;
-        // object.scale.y =0.001;
-        // object.scale.z =0.001;
-        //object.lookAt(new THREE.Vector3(0,0,0));
-        // 加入模型的aabb包围盒
-        // 获取三维模型表面点的最大距离
-        var box3 = new THREE.Box3();
-        box3.setFromObject(object);
-        var maxLength = box3.getSize(new THREE.Vector3()).length();
-        var consult = (camera.far - camera.near) / (20*maxLength);
-        //写入场景内
-        var currentScale = consult;
-        object.scale.set(currentScale,currentScale,currentScale);
-        box = new THREE.BoxHelper(object);
-        // box.material.transparents = true;
-        // box.material.depthTest = false;
-        // box.visible = true;
-        var points = box.geometry.attributes.position.array;
-        obj_x = (points[0]+points[18])/2;
-        obj_y = (points[1]+points[19])/2;
-        obj_z = (points[2]+points[20])/2;
-        oneObj.position.set(-obj_x,-obj_y,-obj_z);
-        //scene.add(box);
-        scene.add(object);
-    });
-```
+    ```javascript
+        //  objLoader
+        objLoader = new THREE.OBJLoader();
+        objLoader.setPath('./obj/');
+        objLoader.load('a.obj', function (object) {
+            oneObj = object;
+            object.traverse(function (child) {
+                if (child.type === "Mesh") {
+                    child.geometry.computeBoundingBox();
+                    child.geometry.verticesNeedUpdate = true;
+                    child.material.side = THREE.DoubleSide;
+                    //child.geometry.center(); //设置模型中心点为几何体的中心
+                }
+            });
+            object.name = "zxj";  //设置模型的名称
+            //对模型的大小进行调整
+
+            // object.scale.x =0.001;
+            // object.scale.y =0.001;
+            // object.scale.z =0.001;
+            //object.lookAt(new THREE.Vector3(0,0,0));
+            // 加入模型的aabb包围盒
+            // 获取三维模型表面点的最大距离
+            var box3 = new THREE.Box3();
+            box3.setFromObject(object);
+            var maxLength = box3.getSize(new THREE.Vector3()).length();
+            var consult = (camera.far - camera.near) / (20*maxLength);
+            //写入场景内
+            var currentScale = consult;
+            object.scale.set(currentScale,currentScale,currentScale);
+            box = new THREE.BoxHelper(object);
+            // box.material.transparents = true;
+            // box.material.depthTest = false;
+            // box.visible = true;
+            var points = box.geometry.attributes.position.array;
+            obj_x = (points[0]+points[18])/2;
+            obj_y = (points[1]+points[19])/2;
+            obj_z = (points[2]+points[20])/2;
+            oneObj.position.set(-obj_x,-obj_y,-obj_z);
+            //scene.add(box);
+            scene.add(object);
+        });
+    ```

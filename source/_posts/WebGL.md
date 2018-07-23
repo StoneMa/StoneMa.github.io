@@ -5,7 +5,7 @@ tags: [webgl, Three.js,前端]
 categories: [图形学]
 ---
 
-# WebGL技术应用
+# WebGL基础与应用
 
 新的技术啊，没人引导，自己啃的话，一开始的时候真的会觉得无从下手，尤其新的领域的内容，有时会感觉力不从  心，但是相信功夫不负有心人，只有肯努力，一定能在这个领域有所建树的，加油！
 
@@ -139,3 +139,6 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
             scene.add(object);
         });
     ```
+
+# 裁剪空间(clipspace)
+ 顶点接下来要从观察空间转换到裁剪空间(clip space，也被称为齐次裁剪空间)中，这个用于转换的矩阵叫做裁剪矩阵(clip matrix)，也被称为投影矩阵(projection matrix)。

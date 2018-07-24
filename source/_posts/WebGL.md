@@ -93,8 +93,8 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
     var currentScale = consult;
     object.scale.set(currentScale,currentScale,currentScale);
 ``` 
-
-## 完整实现过程：
+## 实现过程
+完整实现过程：
 
 ```javascript
         //  objLoader

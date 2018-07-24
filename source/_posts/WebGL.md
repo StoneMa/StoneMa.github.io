@@ -83,20 +83,20 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
 这样，就解决了模型便宜的问题，但是模型的大小适配问题还在，我们的思路是：获取到模型表面的距离最远的两个点，然后保证这个距离是小于``camera``的``far-near``的，同时这个长度大于``far-near`` x 倍，就相应缩小 n*x倍，n是个放大系数，这里我取值是20。
 实现过程如下：
 
-    ```javascript
-            // 获取三维模型表面点的最大距离
-            var box3 = new THREE.Box3();
-            box3.setFromObject(object);
-            var maxLength = box3.getSize(new THREE.Vector3()).length();
-            var consult = (camera.far - camera.near) / (20*maxLength);
-            //写入场景内
-            var currentScale = consult;
-            object.scale.set(currentScale,currentScale,currentScale);
-    ``` 
+```javascript
+    // 获取三维模型表面点的最大距离
+    var box3 = new THREE.Box3();
+    box3.setFromObject(object);
+    var maxLength = box3.getSize(new THREE.Vector3()).length();
+    var consult = (camera.far - camera.near) / (20*maxLength);
+    //写入场景内
+    var currentScale = consult;
+    object.scale.set(currentScale,currentScale,currentScale);
+``` 
 
 ## 完整实现过程：
 
-    ```javascript
+```javascript
         //  objLoader
         objLoader = new THREE.OBJLoader();
         objLoader.setPath('./obj/');
@@ -138,7 +138,7 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
             //scene.add(box);
             scene.add(object);
         });
-    ```
+```
 
 # 裁剪空间(clipspace)
  顶点接下来要从观察空间转换到裁剪空间(clip space，也被称为齐次裁剪空间)中，这个用于转换的矩阵叫做裁剪矩阵(clip matrix)，也被称为投影矩阵(projection matrix)。

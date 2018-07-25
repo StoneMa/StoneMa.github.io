@@ -113,7 +113,6 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
             });
             object.name = "zxj";  //设置模型的名称
             //对模型的大小进行调整
-
             // object.scale.x =0.001;
             // object.scale.y =0.001;
             // object.scale.z =0.001;
@@ -142,4 +141,4 @@ PS:这部分内容来源于[model_view_projection](https://developer.mozilla.org
 ```
 
 # 裁剪空间(clipspace)
- 顶点接下来要从观察空间转换到裁剪空间(clip space，也被称为齐次裁剪空间)中，这个用于转换的矩阵叫做裁剪矩阵(clip matrix)，也被称为投影矩阵(projection matrix)。
+ 顶点接下来要从观察空间转换到裁剪空间(clip space，也被称为齐次裁剪空间)中，这个用于转换的矩阵叫做裁剪矩阵(clip matrix)，也被称为投影矩阵(projection matrix)。如上面的图所示，裁剪空间是由6个面构成的棱台，对于这个视锥而言，近平面和远平面分别是近裁剪平面(near clip plane)和远裁剪平面(far clip plane)。

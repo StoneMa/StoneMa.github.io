@@ -178,7 +178,24 @@ $$
 $$
 任何不满足上述条件的图元都需要被剔除或者裁剪。
 
+# 投影矩阵的推导
+## 什么是投影？
+在理解投影之前，我们要知道一些知识：计算机屏幕是一个二维图像的展示区域，并不能真正的展示三维的物体，最终的形式还是要以二维平面的形式来展示三维物体，那么也就涉及到了三维物体的二维投影，所以现有的各类图形学库，比如OpenGL，Direct3D 都是研究如何把三维模型转换成二维图像进行渲染方面的工作，这也就是投影的过程。一个简单的例子就是：把3D物体对象投影到2D表面的方法是简单的把没个坐标点的 ``Z``坐标丢弃，对立方体来说，看上去就如下图所示：
+![Figure 1: Projection onto the xy plane by discarding z-coordinates.](./3dproj01.gif)
+
+当然，这种方式是过于简单的，大部分时候不是特别有用。因为大部分不会单纯的舍掉 ``Z`` 坐标。而是利用``Z``坐标来做深度视觉缓冲和可见度方面的工作。
+投影公式的作用是将你的几何体变换到一个新的空间体中，这个空间体称为：规范视域体（canonical view volume），规范视域体的精确坐标可能在不同的图形API之间互不相同，但作为讨论起见，把它认为是从(-1, -1, 0)延伸至(1, 1, 1)的盒子，这也是Direct3D中使用的。对于映射到视域体内部的模型而言，它们的``x``和``y``坐标被用于映射到屏幕上。这并不代表``z``坐标是无用的，我们前面提到它通常被深度缓冲用于可见度测试。这就是为什么变换到一个新的空间体中，而不是投影到一个平面上。
+![Orthographic Projection](./3dproj02.gif)
+正交投影如上图所示，坐标的原点在视域体的左表面上，正如我们看到了，视域体由6个面定义：
+left:x = l;
+right:x = r;
+bottom:y = b;
+top:y = t;
+near:z = n;
+far:z = f
+![Perspective Projection](./3dproj22.gif)
 # 参考：
 部分来自如下文章，感谢作者的勤劳付出。
 [裁剪空间-追风剑情](http://www.devacg.com/?post=522)
 [WebGL](https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API)
+[What Is Projection](https://www.codeguru.com/cpp/misc/misc/graphics/article.php/c10123/Deriving-Projection-Matrices.htm)

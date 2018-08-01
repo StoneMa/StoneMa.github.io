@@ -280,9 +280,9 @@ $$
 ![Perspective Projection](./3dproj22.gif "图4：透视投影")
 ![](./透视投影视图.png "图5: 使用相似三角形投影一个点到z=n平面")
 $$
-x'z = \frac{2n}{r-l}x-\frac{r+l}{r-l}z
-y'z = \frac{2n}{t-b}y-\frac{t+b}{t-b}z
-z'z=\frac{f}{f-n}z=\frac{fn}{f-n}
+x'z = \frac{2n}{r-l}x-\frac{r+l}{r-l}z \\
+y'z = \frac{2n}{t-b}y-\frac{t+b}{t-b}z \\
+z'z=\frac{f}{f-n}z=\frac{fn}{f-n} \\
 w'z=z
 $$
 而后得到矩阵表示：

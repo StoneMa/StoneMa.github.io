@@ -3,6 +3,7 @@ title: WebGL
 date: 2018-07-18 13:46:17
 tags: [webgl, Three.js,前端]
 categories: [图形学]
+mathjax: true
 ---
 
 # WebGL基础与应用

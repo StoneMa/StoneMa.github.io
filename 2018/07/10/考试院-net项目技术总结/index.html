@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content=".net技术,web开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="开发考试院笔迹鉴别系统的过程中遇到了很多的问题，也学到了很多，将其记录下来。以供今后回顾。Warning:项目构建和项目打开的时候一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！重要的事情说三遍！！！网站项目是给静态web项目用的。使用解决方法打开项目，才能每次生成项目的时候把dll更新到最新的状态。 数据库连接方式这个最好实时跟着Oracle">
+<meta name="keywords" content=".net技术,web开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="考试院.net项目技术总结">
+<meta property="og:url" content="https://stonema.github.io/2018/07/10/考试院-net项目技术总结/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="开发考试院笔迹鉴别系统的过程中遇到了很多的问题，也学到了很多，将其记录下来。以供今后回顾。Warning:项目构建和项目打开的时候一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！重要的事情说三遍！！！网站项目是给静态web项目用的。使用解决方法打开项目，才能每次生成项目的时候把dll更新到最新的状态。 数据库连接方式这个最好实时跟着Oracle">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="考试院.net项目技术总结">
+<meta name="twitter:description" content="开发考试院笔迹鉴别系统的过程中遇到了很多的问题，也学到了很多，将其记录下来。以供今后回顾。Warning:项目构建和项目打开的时候一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！重要的事情说三遍！！！网站项目是给静态web项目用的。使用解决方法打开项目，才能每次生成项目的时候把dll更新到最新的状态。 数据库连接方式这个最好实时跟着Oracle">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/07/10/考试院-net项目技术总结/"/>
+
+
+
+
+
+  <title>考试院.net项目技术总结 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/07/10/考试院-net项目技术总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">考试院.net项目技术总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-10T09:29:08+08:00">
+                2018-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/开发笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">开发笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发考试院笔迹鉴别系统的过程中遇到了很多的问题，也学到了很多，将其记录下来。以供今后回顾。<br><strong>Warning:</strong>项目构建和项目打开的时候一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！一定要使用解决方法，不要使用网站！重要的事情说三遍！！！网站项目是给静态web项目用的。使用解决方法打开项目，才能每次生成项目的时候把dll更新到最新的状态。</p>
+<h1 id="数据库连接方式"><a href="#数据库连接方式" class="headerlink" title="数据库连接方式"></a>数据库连接方式</h1><p>这个最好实时跟着Oracle的官方文档走，我使用的是<code>Oracle.ManagerdDataAccess</code>,把它下载后加入到项目的引用。<br>Web.config文件的配置如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 本地 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--&lt;add name="Oracle_DB" connectionString="DATA SOURCE=127.0.0.1/orcl;PASSWORD=bjshadmin;USER ID=ZK" providerName="Oracle.ManagedDataAccess.Client"/&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 远程 --&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>配置完成后，我们在后台程序中就可以用下面的方式调用数据库连接和方法：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建连接字符串</span></span><br><span class="line">String connctionString = ConfigurationManager.ConnectionStrings[<span class="string">"Oracle_DB"</span>].ToString();</span><br><span class="line">OracleConnection conn = <span class="keyword">new</span> OracleConnection(connctionString); <span class="comment">//创建连接</span></span><br><span class="line">OracleCommand cmd = conn.CreateCommand();<span class="comment">// 创建数据库控制器</span></span><br><span class="line">cmd.CommandText = <span class="string">"SELECT * FROM table"</span>;<span class="comment">//设置commandText</span></span><br><span class="line">conn.Open();<span class="comment">//开启连接</span></span><br><span class="line"><span class="comment">/****************查询语句的执行方法 begin******************/</span></span><br><span class="line">OracleDataReader reader = cmd.ExecuteReader(); <span class="comment">//至此查询结果接收到了reader对象中</span></span><br><span class="line"><span class="comment">//读取reader对象中的值。</span></span><br><span class="line"><span class="keyword">while</span> (reader.Read())</span><br><span class="line">&#123;</span><br><span class="line">    StuInfo stu = <span class="keyword">new</span> StuInfo();</span><br><span class="line">    stu.Ks_zkz = reader[<span class="number">0</span>].ToString();</span><br><span class="line">    stu.Ks_xm  = reader[<span class="number">1</span>].ToString();</span><br><span class="line">    stuList.Add(stu);</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">/*************** 执行Update语句的方法 ******************/</span> </span><br><span class="line"><span class="keyword">int</span> rows = cmd.ExecuteNonQuery(); <span class="comment">//返回受影响条数，删除与增加语句类似</span></span><br><span class="line"></span><br><span class="line">conn.close();<span class="comment">//最后不要忘了close连接</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="aspx页面中处理JS的Ajax请求"><a href="#aspx页面中处理JS的Ajax请求" class="headerlink" title="aspx页面中处理JS的Ajax请求"></a>aspx页面中处理JS的Ajax请求</h1><p>aspx页面中处理JS的Ajax请求时可以使用<code>ashx</code>, <em>右键-&gt;添加-&gt;一般处理程序</em>,一般处理程序可以充当服务器端处理Ajax请求的文件：</p>
+<p>JS：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过审核的处理</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">passStu_next</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> zkzh = $(<span class="string">'.kszkz'</span>).val();</span><br><span class="line">    alert(<span class="string">"标记学号:"</span> + zkzh + <span class="string">"已通过审核"</span>);</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: <span class="string">"post"</span>,</span><br><span class="line">        url: <span class="string">"passAndNextHandler.ashx"</span>,</span><br><span class="line">        data: &#123; <span class="string">"kszkz"</span>: zkzh &#125;,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">            <span class="comment">//跳转到下一个考生的详细内容页面</span></span><br><span class="line">            <span class="keyword">if</span> (result == <span class="string">""</span>) &#123;</span><br><span class="line">                alert(<span class="string">"审核完毕"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">window</span>.location.href = <span class="string">"DetailCardsInfo.aspx?zkzh="</span> + result;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;,</span><br><span class="line">        error: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">            alert(<span class="string">"error"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ashx程序：<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">public class passAndNextHandler : IHttpHandler, IRequiresSessionState</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//创建连接字符串</span></span><br><span class="line">    String connctionString = ConfigurationManager.ConnectionStrings[<span class="string">"Oracle_DB"</span>].ToString();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ProcessRequest</span>(<span class="params">HttpContext context</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">string</span> czr = HttpContext.Current.Session[<span class="string">"UserName"</span>].ToString();</span><br><span class="line">        String nextZkz = <span class="literal">null</span>;</span><br><span class="line">        context.Response.ContentType = <span class="string">"text/plain"</span>;</span><br><span class="line">        String zkzh = context.Request.Form[<span class="string">"kszkz"</span>];</span><br><span class="line">        String sql = <span class="string">"UPDATE ZK.V_BYSQ_BJSH_SKB_KS SET BJSH_JG_SKB = '1',BJSH_SKB_CZR='"</span> + czr + <span class="string">"' WHERE KS_ZKZ= '"</span> + zkzh + <span class="string">"'"</span>;</span><br><span class="line">        OracleConnection conn = <span class="keyword">new</span> OracleConnection(connctionString);</span><br><span class="line">        OracleCommand cmd = conn.CreateCommand();</span><br><span class="line">        conn.Open();</span><br><span class="line">        <span class="comment">//向表中插入数据的同时，选择下一个考生</span></span><br><span class="line">        OracleTransaction transaction = conn.BeginTransaction(IsolationLevel.ReadCommitted);</span><br><span class="line">        cmd.Transaction = transaction; <span class="comment">//开始事务</span></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            cmd.CommandText = sql1;</span><br><span class="line">            cmd.ExecuteNonQuery();</span><br><span class="line">            <span class="comment">//提交事务</span></span><br><span class="line">            transaction.Commit(); <span class="comment">//这里如果是多条语句，同时提交成功才返回</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">        &#123;</span><br><span class="line">            transaction.Rollback(); <span class="comment">//未成功就rollback</span></span><br><span class="line">            Console.Write(ex.ToString());</span><br><span class="line">        &#125;</span><br><span class="line">        context.Response.Write(nextZkz);</span><br><span class="line">        conn.Close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">bool</span> IsReusable</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="访问网络路径中的文件，以及下载文件到本地。"><a href="#访问网络路径中的文件，以及下载文件到本地。" class="headerlink" title="访问网络路径中的文件，以及下载文件到本地。"></a>访问网络路径中的文件，以及下载文件到本地。</h1><ol>
+<li><p>在本地磁盘创建存储路径：</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String directoryPath = <span class="string">@"D:\Downloadimgs\"</span>+list_zkz[i]+<span class="string">"//"</span>; <span class="comment">//定义一个路径变量</span></span><br><span class="line"><span class="keyword">if</span> (!Directory.Exists(directoryPath))<span class="comment">//如果路径不存在</span></span><br><span class="line">&#123;</span><br><span class="line">    Directory.CreateDirectory(directoryPath);<span class="comment">//创建一个路径的文件夹</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>网络路径的映射以及文件拷贝</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置源目标路径</span></span><br><span class="line"><span class="keyword">string</span> sourceFile = <span class="string">@"http://127.0.0.1/img//"</span> + reader[<span class="number">0</span>] + <span class="string">"//"</span> + reader[<span class="number">1</span>].ToString().Trim() + <span class="string">"//"</span> + reader[<span class="number">3</span>].ToString().Trim() + <span class="string">".jpg"</span>;</span><br><span class="line"><span class="comment">//设置目的地路径</span></span><br><span class="line"><span class="keyword">string</span> destinationFile = <span class="string">@"D:\Downloadimgs\"</span> + list_zkz[i] + <span class="string">"//"</span> + reader[<span class="number">2</span>] + <span class="string">"_"</span> + reader[<span class="number">1</span>].ToString().Trim() + <span class="string">"_"</span> + reader[<span class="number">0</span>] + <span class="string">".jpg"</span>;</span><br><span class="line"><span class="comment">//FileInfo file = new FileInfo(sourceFile);</span></span><br><span class="line"><span class="comment">//下面的这种文件拷贝方式，只能用于本地磁盘的文件拷贝，不能用于网络dowmload</span></span><br><span class="line"><span class="comment">//if (file.Exists)</span></span><br><span class="line"><span class="comment">//&#123;</span></span><br><span class="line"><span class="comment">//    // true is overwrite</span></span><br><span class="line"><span class="comment">//    file.CopyTo(destinationFile, true);</span></span><br><span class="line"><span class="comment">//&#125;</span></span><br><span class="line">WebClient wc = <span class="keyword">new</span> WebClient(); <span class="comment">//创建网络通信实例</span></span><br><span class="line"><span class="keyword">byte</span>[] <span class="keyword">by</span> = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>]; <span class="comment">//接收数据的数组</span></span><br><span class="line">WriteTextLog(<span class="string">"beforeCheck:"</span>,sourceFile.ToString()+<span class="string">"|"</span>+destinationFile, DateTime.Now);</span><br><span class="line">WriteTextLog(<span class="string">"check:"</span>, UrlCheck(sourceFile).ToString(), DateTime.Now);</span><br><span class="line"><span class="keyword">if</span> (UrlCheck(sourceFile)) <span class="comment">// 这里的Urlcheck是必须的</span></span><br><span class="line">&#123;</span><br><span class="line">    WriteTextLog(<span class="string">"savefile:"</span>, sourceFile.ToString() +<span class="string">"|"</span>+ destinationFile, DateTime.Now);</span><br><span class="line">    FileStream fs = <span class="keyword">new</span> FileStream(destinationFile, FileMode.Create, FileAccess.Write); <span class="comment">//创建文件</span></span><br><span class="line">    BinaryWriter bw = <span class="keyword">new</span> BinaryWriter(fs);</span><br><span class="line">    <span class="keyword">by</span> = wc.DownloadData(sourceFile);</span><br><span class="line">    bw.Write(<span class="keyword">by</span>, <span class="number">0</span>, <span class="keyword">by</span>.Length);</span><br><span class="line">    bw.Close();</span><br><span class="line">    fs.Close(); <span class="comment">//关闭数据流</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>URL的Check需要判断上面的URL是否是网络地址</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 如果路径中含有http或者https,就进行webrequest的处理</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">bool</span> <span class="title">UrlCheck</span>(<span class="params"><span class="keyword">string</span> strUrl</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!strUrl.Contains(<span class="string">"http://"</span>) &amp;&amp; !strUrl.Contains(<span class="string">"https://"</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            strUrl = <span class="string">"http://"</span> + strUrl;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(strUrl);</span><br><span class="line">            myRequest.Method = <span class="string">"HEAD"</span>;</span><br><span class="line">            myRequest.Timeout = <span class="number">20000</span>;  <span class="comment">//超时时间20秒</span></span><br><span class="line">            HttpWebResponse res = (HttpWebResponse)myRequest.GetResponse();</span><br><span class="line">            Boolean te;</span><br><span class="line">            <span class="keyword">if</span> (res.StatusCode == HttpStatusCode.OK) te = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span> te = <span class="literal">false</span>;</span><br><span class="line">            res.Close();</span><br><span class="line">            <span class="keyword">return</span> te;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上面的日志文件会在项目目录下生成日志文件</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">WriteTextLog</span>(<span class="params"><span class="keyword">string</span> action, <span class="keyword">string</span> strMessage, DateTime time</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">string</span> path = AppDomain.CurrentDomain.BaseDirectory + <span class="string">@"System\Log\"</span>;</span><br><span class="line">    <span class="keyword">if</span> (!Directory.Exists(path))</span><br><span class="line">        Directory.CreateDirectory(path);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">string</span> fileFullPath = path + time.ToString(<span class="string">"yyyy-MM-dd"</span>) + <span class="string">".System.txt"</span>;</span><br><span class="line">    StringBuilder str = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    str.Append(<span class="string">"Time:    "</span> + time.ToString() + <span class="string">"\r\n"</span>);</span><br><span class="line">    str.Append(<span class="string">"Action:  "</span> + action + <span class="string">"\r\n"</span>);</span><br><span class="line">    str.Append(<span class="string">"Message: "</span> + strMessage + <span class="string">"\r\n"</span>);</span><br><span class="line">    str.Append(<span class="string">"-----------------------------------------------------------\r\n\r\n"</span>);</span><br><span class="line">    StreamWriter sw;</span><br><span class="line">    <span class="keyword">if</span> (!File.Exists(fileFullPath))</span><br><span class="line">    &#123;</span><br><span class="line">        sw = File.CreateText(fileFullPath);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        sw = File.AppendText(fileFullPath);</span><br><span class="line">    &#125;</span><br><span class="line">    sw.WriteLine(str.ToString());</span><br><span class="line">    sw.Close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/net技术/" rel="tag"># .net技术</a>
+          
+            <a href="/tags/web开发/" rel="tag"># web开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/09/日记/" rel="next" title="日记">
+                <i class="fa fa-chevron-left"></i> 日记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/18/WebGL/" rel="prev" title="WebGL">
+                WebGL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库连接方式"><span class="nav-number">1.</span> <span class="nav-text">数据库连接方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#aspx页面中处理JS的Ajax请求"><span class="nav-number">2.</span> <span class="nav-text">aspx页面中处理JS的Ajax请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问网络路径中的文件，以及下载文件到本地。"><span class="nav-number">3.</span> <span class="nav-text">访问网络路径中的文件，以及下载文件到本地。</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

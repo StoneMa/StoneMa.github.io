@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="特征提取,斑点检测算法,算子,滤波," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="LoG简介图像中灰度变化较大的非连续像素可以看做是边缘，边缘是最为重要的图像特征之一，在目标检测、追踪、识别中都必不可少的使用到了边缘，人类视觉系统也对边缘信息非常敏感。边缘检测的一般步骤如下：  滤波（去噪） 增强（一般是通过计算梯度幅值） 检测（在图像中有许多点的梯度幅值会比较大，而这些点并不都是边缘，所以应该用某种方法来确定边缘点，比如最简单的边缘检测判据：梯度幅值阈值） 定位（有些应用场合">
+<meta name="keywords" content="特征提取,斑点检测算法,算子,滤波">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LoG算子与DoG算子">
+<meta property="og:url" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="LoG简介图像中灰度变化较大的非连续像素可以看做是边缘，边缘是最为重要的图像特征之一，在目标检测、追踪、识别中都必不可少的使用到了边缘，人类视觉系统也对边缘信息非常敏感。边缘检测的一般步骤如下：  滤波（去噪） 增强（一般是通过计算梯度幅值） 检测（在图像中有许多点的梯度幅值会比较大，而这些点并不都是边缘，所以应该用某种方法来确定边缘点，比如最简单的边缘检测判据：梯度幅值阈值） 定位（有些应用场合">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/LoG.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/LoG公式最终形式.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/LoG算子.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/DoG.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LoG算子与DoG算子">
+<meta name="twitter:description" content="LoG简介图像中灰度变化较大的非连续像素可以看做是边缘，边缘是最为重要的图像特征之一，在目标检测、追踪、识别中都必不可少的使用到了边缘，人类视觉系统也对边缘信息非常敏感。边缘检测的一般步骤如下：  滤波（去噪） 增强（一般是通过计算梯度幅值） 检测（在图像中有许多点的梯度幅值会比较大，而这些点并不都是边缘，所以应该用某种方法来确定边缘点，比如最简单的边缘检测判据：梯度幅值阈值） 定位（有些应用场合">
+<meta name="twitter:image" content="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/LoG.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/"/>
+
+
+
+
+
+  <title>LoG算子与DoG算子 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/04/16/LoG算子与DoG算子/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LoG算子与DoG算子</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-16T14:07:01+08:00">
+                2018-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/特征提取/" itemprop="url" rel="index">
+                    <span itemprop="name">特征提取</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="LoG简介"><a href="#LoG简介" class="headerlink" title="LoG简介"></a>LoG简介</h2><p>图像中灰度变化较大的非连续像素可以看做是边缘，边缘是最为重要的图像特征之一，在目标检测、追踪、识别中都必不可少的使用到了边缘，人类视觉系统也对边缘信息非常敏感。<br>边缘检测的一般步骤如下：</p>
+<ol>
+<li>滤波（去噪）</li>
+<li>增强（一般是通过计算梯度幅值）</li>
+<li>检测（在图像中有许多点的梯度幅值会比较大，而这些点并不都是边缘，所以应该用某种方法来确定边缘点，比如最简单的边缘检测判据：梯度幅值阈值）</li>
+<li>定位（有些应用场合要求确定边缘位置，可以在子像素水平上来估计，指出边缘的位置和方向）</li>
+</ol>
+<p>边缘检测方法比较常用的有基于各种算子的方法，有基于一阶导数的各种算子（Roberts、Sobel、Canny、Prewitt等），还有基于二阶导数的Laplacian算子（LoG）等。</p>
+<p>LoG边缘检测算子是David Courtnay Marr和Ellen Hildreth（1980）共同提出的。因此，也称为边缘检测算法或Marr &amp; Hildreth算子。该算法首先对图像做高斯滤波，然后再求其拉普拉斯（Laplacian）二阶导数。即图像与 Laplacian of the Gaussian function 进行滤波运算。最后，通过检测滤波结果的零交叉（Zero crossings）可以获得图像或物体的边缘。因而，也被业界简称为Laplacian-of-Gaussian (LoG)算子。</p>
+<h2 id="Marr和Hildreth证明了以下两个观点："><a href="#Marr和Hildreth证明了以下两个观点：" class="headerlink" title="Marr和Hildreth证明了以下两个观点："></a>Marr和Hildreth证明了以下两个观点：</h2><ol>
+<li>灰度变化与图像尺寸没有关系，因此检测需要不同尺度的算子</li>
+<li>灰度的突然变化会在一阶导数中引起波峰和波谷，或者二阶导数中一起零交叉</li>
+</ol>
+<p>其中一阶导数一般找梯度极值。二阶导数找过零点（需要忽略无意义的过零点（即均匀零区））。</p>
+<h2 id="LoG边缘检测算法步骤："><a href="#LoG边缘检测算法步骤：" class="headerlink" title="LoG边缘检测算法步骤："></a>LoG边缘检测算法步骤：</h2><ol>
+<li>平滑：高斯滤波器</li>
+<li>增强：Laplacian算子计算二阶导</li>
+<li>检测：二阶导零交叉点并对应于一阶导数的较大峰值</li>
+<li>定位：线性内插</li>
+</ol>
+<p>根据卷积的求导法则，先卷积后求导和先求导后卷积是相等的，所以可以把第1、2步合并为一步，先对高斯滤波器做拉普拉斯变换，得到LoG算子，然后再用这个算子与图像做卷积。</p>
+<h3 id="探测器"><a href="#探测器" class="headerlink" title="探测器"></a>探测器</h3><p>灰度的突然变化会在一阶导数中引起波峰或者波谷，或者在二阶导数中等效的引起零交叉。</p>
+<ul>
+<li>一阶微分探测器<br>从数学上讲，像素的灰度值变化速率，可以用一阶微分来检测，对于二维离散函数，其微分可以表示为：<script type="math/tex; mode=display">\frac{\partial f(x,y)}{\partial x} = f(x+1,y) - f(x,y)\qquad</script><script type="math/tex; mode=display">\frac{\partial f(x,y)}{\partial y} = f(x,y + 1) - f(x,y)\qquad</script></li>
+<li>二阶微分检测器<br>二阶微分同样可以如一阶微分一样，检测到函数的变化。二阶微分其实就是拉普拉斯算子，一般使用下面的方法表示：（两个方向）</li>
+</ul>
+<script type="math/tex; mode=display">\nabla^{2}f = \frac{\partial^{2}f}{\partial{x^{2}}} + \frac{\partial^{2}f}{\partial{y^{2}}}</script><p>为了适应图像处理，我们将拉普拉斯算子写成离散形式，其中</p>
+<script type="math/tex; mode=display">\frac{\partial^{2}f}{\partial{x^{2}}} = f(x+1,y)+f(x-1,y)-2f(x,y)</script><script type="math/tex; mode=display">\frac{\partial^{2}f}{\partial{y^{2}}} = f(x,y+1)+f(x,y-1)-2f(x,y)</script><p>最终结果为:(两个方向作和)<br>\begin{equation}<br>\begin{aligned}<br>\frac{\partial^{2}f}{\partial{x^{2}}} + \frac{\partial^{2}f}{\partial{x^{2}}}&amp;= f(x+1,y)+f(x-1,y)-2f(x,y) + f(x+1,y)+f(x-1,y)-2f(x,y)\&amp;= f(x+1,y)+f(x-1,y) + f(x+1,y)+f(x-1,y) - 4f(x,y)<br>\nonumber<br>\end{aligned}<br>\end{equation}</p>
+<p>所以拉普拉斯算子在图像处理中的模板为：</p>
+<script type="math/tex; mode=display">
+ \left[
+ \begin{matrix}
+   0 & 1 & 0 \\
+   1 & -4 & 1 \\
+   0 & 1 & 0
+  \end{matrix}
+  \right]</script><p>拉普拉斯算子对噪声和离散点极为敏感，所以在利用其进行边缘检测的时候，需要首先对图像进行平滑，除去噪声的影响。因为高斯运算和拉普拉斯运算可以叠加，我们可以将其的最终形式写为：<br><img src="/2018/04/16/LoG算子与DoG算子/LoG.png" alt="LoG公式推导"><br>最终简化为:<br><img src="/2018/04/16/LoG算子与DoG算子/LoG公式最终形式.png" alt="最终"><br>MatLab中的样子<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">laplace_gaussian_filter = fspecial(<span class="string">'log'</span>,[<span class="number">40</span> <span class="number">40</span>],<span class="number">4.5</span>);</span><br><span class="line">subplot(<span class="number">121</span>)</span><br><span class="line">surf(laplace_gaussian_filter);</span><br><span class="line">subplot(<span class="number">122</span>)</span><br><span class="line">surf(-laplace_gaussian_filter);</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2018/04/16/LoG算子与DoG算子/LoG算子.png" alt="LoG"></p>
+<h2 id="DoG简介"><a href="#DoG简介" class="headerlink" title="DoG简介"></a>DoG简介</h2><p>在计算机视觉中，高斯差（英语：Difference of Gaussians，简称“DOG”）是一种将一个原始灰度图像的模糊图像从另一幅灰度图像进行增强的算法，通过DOG以降低模糊图像的模糊度。这个模糊图像是通过将原始灰度图像经过带有不同标准差的高斯核进行卷积得到的。用高斯核进行高斯模糊只能压制高频信息。从一幅图像中减去另一幅可以保持在两幅图像中所保持的频带中含有的空间信息。这样的话，DOG就相当于一个能够去除除了那些在原始图像中被保留下来的频率之外的所有其他频率信息的带通滤波器。</p>
+<h3 id="DoG的数学含义"><a href="#DoG的数学含义" class="headerlink" title="DoG的数学含义"></a>DoG的数学含义</h3><p>高斯函数的定义为：</p>
+<script type="math/tex; mode=display">
+G_{\sigma_{1}}(x,y)=\frac{1}{\sqrt{2\pi\sigma^{2}_{1}}}\exp(-\frac{x^{2}+y^{2}}{2\sigma^{2}_{1}})</script><p>我们知道，对于高斯金字塔的构建，就是对于不同尺度下的相同图片进行不同的 $\sigma$ 参数下的滤波操作，看下图中的左侧，就是对原图像进行了不同 $\sigma$ 高斯滤波的图像，对一副图像进行高斯滤波操作，在数学上就是高斯函数与原函数做卷积运算，从而得到<strong>高斯模糊图像</strong>，例如分别为$\sigma<em>{1},\sigma</em>{2}$ :</p>
+<script type="math/tex; mode=display">
+g_{1}(x,y)=G_{\sigma_{1}}(x,y)*f(x,y)</script><script type="math/tex; mode=display">
+g_{2}(x,y)=G_{\sigma_{2}}(x,y)*f(x,y)</script><p>而右侧的DoG图像(高斯差分图像)就是左侧两个不同的高斯模糊图像做差得到的，高斯差分的数学表达：（上图中的两式相减）</p>
+<script type="math/tex; mode=display">
+g_{1}(x,y)-g_{2}(x,y)=G_{\sigma_{1}}(x,y)*f(x,y)-G_{\sigma_{2}}(x,y)*f(x,y)=DoG*f(x,y)</script><p>所以，上述公式可以将 $DoG$ 表示为：</p>
+<script type="math/tex; mode=display">
+DoG = G_{\sigma_{1}}-G_{\sigma_{2}}=\frac{1}{\sqrt{2\pi}}(\frac{1}{\sigma_{1}}e^{-\frac{(x^{2}+y^{2})}{2\sigma^{2}_{1}}}-\frac{1}{\sigma_{2}}e^{-\frac{(x^{2}+y^{2})}{2\sigma^{2}_{2}}})</script><p>这样，右侧就得到了高斯差分（DoG）图像<br><img src="/2018/04/16/LoG算子与DoG算子/DoG.png" alt="DoG"></p>
+<p>得到DoG图像后，再在DoG图像上检测特征，提取特征，这样做的好处就是，既能降低计算成本，又能不损失特征，不同的高斯平滑后得到的DoG图像都是明显的特征点。</p>
+<h3 id="DoG的应用"><a href="#DoG的应用" class="headerlink" title="DoG的应用"></a>DoG的应用</h3><p>作为一个增强算法，DOG可以被用来增加边缘和其他细节的可见性，大部分的边缘锐化算子使用增强高频信号的方法，但是因为随机噪声也是高频信号，很多锐化算子也增强了噪声。DOG算法去除的高频信号中通常包含了随机噪声，所以这种方法是最适合处理那些有高频噪声的图像。这个算法的一个主要缺点就是在调整图像对比度的过程中信息量会减少。</p>
+<p>当它被用于图像增强时，DOG算法中两个高斯核的半径之比通常为4:1或5:1。当设为1.6时，即为高斯拉普拉斯算子的近似。高斯拉普拉斯算子在多尺度多分辨率像片。用于近似高斯拉普拉斯算子两个高斯核的确切大小决定了两个高斯模糊后的影像间的尺度。</p>
+<p>DOG也被用于尺度不变特征变换中的斑点检测。事实上，DOG算法作为两个多元正态分布的差通常总额为零，把它和一个恒定信号进行卷积没有意义。当K约等于1.6时它很好的近似了高斯拉普拉斯变换，当K约等于5时又很好的近似了视网膜上神经节细胞的视野。它可以很好的作为一个实时斑点检测算子和尺度选择算子应用于递归程序。</p>
+<p>在DOG算法中，它被认为是在模拟视网膜上的神经从影像中提取信息从而提供给大脑。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li><a href="https://www.jianshu.com/p/2ac784fd22fc" target="_blank" rel="noopener">边缘检测滤波器</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E5%B7%AE" target="_blank" rel="noopener">高斯差</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/特征提取/" rel="tag"># 特征提取</a>
+          
+            <a href="/tags/斑点检测算法/" rel="tag"># 斑点检测算法</a>
+          
+            <a href="/tags/算子/" rel="tag"># 算子</a>
+          
+            <a href="/tags/滤波/" rel="tag"># 滤波</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/12/SIFT尺度不变特征变换/" rel="next" title="SIFT尺度不变特征变换">
+                <i class="fa fa-chevron-left"></i> SIFT尺度不变特征变换
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/17/MachineLearning之KNN/" rel="prev" title="MachineLearning之KNN">
+                MachineLearning之KNN <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LoG简介"><span class="nav-number">1.</span> <span class="nav-text">LoG简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Marr和Hildreth证明了以下两个观点："><span class="nav-number">2.</span> <span class="nav-text">Marr和Hildreth证明了以下两个观点：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LoG边缘检测算法步骤："><span class="nav-number">3.</span> <span class="nav-text">LoG边缘检测算法步骤：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#探测器"><span class="nav-number">3.1.</span> <span class="nav-text">探测器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DoG简介"><span class="nav-number">4.</span> <span class="nav-text">DoG简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DoG的数学含义"><span class="nav-number">4.1.</span> <span class="nav-text">DoG的数学含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DoG的应用"><span class="nav-number">4.2.</span> <span class="nav-text">DoG的应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考："><span class="nav-number">5.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

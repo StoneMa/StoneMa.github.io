@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,感知器,卷积神经网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="卷积神经网络卷积神经网络，是一种前馈神经网络，人工神经元可以响应周围单元，可以进行大型图像处理。卷积神经网络包括卷积层和池化层。 首先来看上一篇文章中的图，这个图就是用来描述CNN 从入坑开始 —— CNN或许这并不是你接触到的第一个深度学习领域、或者是机器学习领域的专业名词，但是搞明白它，足以让我们学习到很多知识以供后续的学习和进步。CNN（Convolutional Neural Networ">
+<meta name="keywords" content="机器学习,感知器,卷积神经网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="认识卷积神经网络CNN">
+<meta property="og:url" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="卷积神经网络卷积神经网络，是一种前馈神经网络，人工神经元可以响应周围单元，可以进行大型图像处理。卷积神经网络包括卷积层和池化层。 首先来看上一篇文章中的图，这个图就是用来描述CNN 从入坑开始 —— CNN或许这并不是你接触到的第一个深度学习领域、或者是机器学习领域的专业名词，但是搞明白它，足以让我们学习到很多知识以供后续的学习和进步。CNN（Convolutional Neural Networ">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/cnn0.png">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/CNN.gif">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/cnnprocess.gif">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/rgbcnn.png">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/pooling.gif">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/fullconnection.png">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/full0.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/full1.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/full2.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/mao.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/full3.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/full4.jpg">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.211Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="认识卷积神经网络CNN">
+<meta name="twitter:description" content="卷积神经网络卷积神经网络，是一种前馈神经网络，人工神经元可以响应周围单元，可以进行大型图像处理。卷积神经网络包括卷积层和池化层。 首先来看上一篇文章中的图，这个图就是用来描述CNN 从入坑开始 —— CNN或许这并不是你接触到的第一个深度学习领域、或者是机器学习领域的专业名词，但是搞明白它，足以让我们学习到很多知识以供后续的学习和进步。CNN（Convolutional Neural Networ">
+<meta name="twitter:image" content="https://stonema.github.io/2018/06/04/认识卷积神经网络/cnn0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/06/04/认识卷积神经网络/"/>
+
+
+
+
+
+  <title>认识卷积神经网络CNN | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/06/04/认识卷积神经网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">认识卷积神经网络CNN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-04T14:53:29+08:00">
+                2018-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/神经网络/" itemprop="url" rel="index">
+                    <span itemprop="name">神经网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h1><p><strong>卷积神经网络，是一种前馈神经网络，人工神经元可以响应周围单元，可以进行大型图像处理。卷积神经网络包括卷积层和池化层。</strong></p>
+<p>首先来看上一篇文章中的图，这个图就是用来描述CNN<br><img src="/2018/06/04/认识卷积神经网络/cnn0.png" alt="cnn"></p>
+<h2 id="从入坑开始-——-CNN"><a href="#从入坑开始-——-CNN" class="headerlink" title="从入坑开始 —— CNN"></a>从入坑开始 —— CNN</h2><p>或许这并不是你接触到的第一个深度学习领域、或者是机器学习领域的专业名词，但是搞明白它，足以让我们学习到很多知识以供后续的学习和进步。<br>CNN（Convolutional Neural Networks）也就是我们常说的卷积神经网络，单单从这个名词来看，这里就有几个概念需要我们来弄明白——什么是<strong>卷积</strong>，什么是<strong>神经网络</strong>。</p>
+<h2 id="卷积"><a href="#卷积" class="headerlink" title="卷积"></a>卷积</h2><p>最早接触这个词的时候是读大学的时候学习《数字信号处理》这门课程，里面在FFT快速傅里叶变化的时候有讲到卷积运算，$\bigotimes$ 表示卷积运算，那么：</p>
+<script type="math/tex; mode=display">
+f(x) \bigotimes g(x) = \int_{-\infty}^{+\infty} f(\tau)g(x-\tau)d\tau\tag{$1$}</script><p>离散化的卷积运算：</p>
+<script type="math/tex; mode=display">
+y(n) = \sum_{i=-\infty}^{+\infty}x(i)h(n-i)=x(n)*h(n)\tag{$2$}</script><p>但是！！！这里神经网络中的卷积运算，并非傅里叶变换中的卷积运算，这里的卷积运算是以图像和卷积核（也叫滤波器）对应位置相乘再相加得到的结果：如下图所示：<br><img src="/2018/06/04/认识卷积神经网络/CNN.gif" alt="cnn"><br>图中的黄色区域的标注数字为卷积核，如下所示：</p>
+<script type="math/tex; mode=display">
+ \left[
+ \begin{matrix}
+   1 & 0 & 1 \\
+   0 & 1 & 0 \\
+   1 & 0 & 1
+  \end{matrix}
+  \right]\tag{$3$}</script><p>我们可以看到，右边得到的结果是左边大矩阵和小矩阵卷积得到的，大矩阵就是我们的原图像，里面的值就是图像像素的值，而小矩阵就是卷积核。两者对应位置相乘然后依次相加，得到新矩阵的一个位置的值，然后向右滑动卷积核（滑动的间隔可调）得到新的位置的值。这就是神经网络中的<strong>卷积</strong>。这里要注意的是，我们从上图中可以看到，卷积核在移动的过程中是一个一个像素滑动的，这个滑动的间隔叫做<strong>步长</strong>（strides），strides的值可以自己设置，表示滑动的间隔的大小。通过这样的操作，我们可以直观的看到，原图像尺寸被卷积操作<strong>缩小</strong>了。这就是卷积操作的作用，可以通过卷积核把一个小区间内的<strong>特征</strong>提取出来，并以数值化的形式表现出来。如果你要深挖为什么要用这样的计算形式来处理卷积核与图形，建议看图像滤波方面的内容。</p>
+<p>那么到这里，我们初步具备了学习卷积神经网络的基础知识。Next，我们开始了解卷积神经网络中的各层，以及它们的工作内容。</p>
+<h2 id="卷积神经网络中的分层"><a href="#卷积神经网络中的分层" class="headerlink" title="卷积神经网络中的分层"></a>卷积神经网络中的分层</h2><p>卷积神经网络，是一种前馈神经网络，卷积神经网络包括卷积层和池化层。</p>
+<h2 id="输入层（Input-Layer）"><a href="#输入层（Input-Layer）" class="headerlink" title="输入层（Input Layer）"></a>输入层（Input Layer）</h2><p>输入层：<br>该层要做的处理主要是对原始图像数据进行预处理，其中包括：</p>
+<ul>
+<li>去均值：<br>把输入数据各个维度都中心化为0，如下图所示，其目的就是把样本的中心拉回到坐标系原点上。</li>
+<li>归一化：<br>幅度归一化到同样的范围，如下所示，即减少各维度数据取值范围的差异而带来的干扰，比如，我们有两个维度的特征A和B，A范围是0到10，而B范围是0到10000，如果直接使用这两个特征是有问题的，好的做法就是归一化，即A和B的数据都变为0到1的范围。</li>
+<li>PCA/白化：<br>用PCA降维；白化是对数据各个特征轴上的幅度归一化</li>
+</ul>
+<h2 id="卷积层（Convention-Layer）"><a href="#卷积层（Convention-Layer）" class="headerlink" title="卷积层（Convention Layer）"></a>卷积层（Convention Layer）</h2><p>卷积神经网络(CNN)第一次提出是在1997年，杨乐春（LeNet）大神的一篇关于数字OCR识别的论文，在2012年的ImageNet竞赛中CNN网络成功击败其它非DNN模型算法，从此获得学术界的关注与工业界的兴趣。从本质上来说，图像卷积都是离散卷积，离散卷积本质上是线性变换、(这也是为什么要引入激活函数)上面已经介绍了离散卷积运算的形式，卷积层也是卷积神经网络中最重要的一个层：<br>卷积在上文，以及之前的文章中我们介绍过它的运算方式，实际卷积的过程或者说卷积运算的过程，就是在提取原矩阵中的特征，（或者理解为对原矩阵做滤波）所以每次卷积操作完成后，得到的都是一个featuremap<br>下面的图片详细解释了卷积的过程：<br><img src="/2018/06/04/认识卷积神经网络/cnnprocess.gif" alt="cnnprocess"><br>上面这个图中有几个重要的名词，我们需要了解：</p>
+<ul>
+<li>深度/depth（就是每次卷积能得到多少个featuremap）</li>
+<li>步长/stride （窗口一次滑动的长度）</li>
+<li>填充值/zero-padding（边缘填充0）VALID（边缘不填充）<br>上面就是单层卷积操作的全部过程了，对于多层卷积我们以一个例子来说明：<br><img src="/2018/06/04/认识卷积神经网络/rgbcnn.png" alt="多层卷积"><br>比如上图中输入为5x5x2,卷积核为3个3x3的filter，填充方式为VALID，那么这幅图从下往上看，我们第一步分别用三个卷积核对原图像做卷积得到第二层的3个3x3x2的结果，然后对于每一个3x3x2的结果，两层featuremap的对应位置相加，就得到一张3x3的featuremap，同样其他卷积核得到的结果相同，这样就一共得到了三张featuremap，所以说最后输出的featuremap数量与卷积核的数量相同。</li>
+</ul>
+<h2 id="池化层（Sampling-Layer，Pooling-Layer）"><a href="#池化层（Sampling-Layer，Pooling-Layer）" class="headerlink" title="池化层（Sampling Layer，Pooling Layer）"></a>池化层（Sampling Layer，Pooling Layer）</h2><p>不知道为什么使用‘池化’这个词，实际这个过程更符合“采样”,我的猜测是“采样”更多的体现的是从已有样本中选择出代表，而池化是使用某些运算后的结果作为代表，并不一定是在原样本中采样。<br><img src="/2018/06/04/认识卷积神经网络/pooling.gif" alt="pooling"><br>在CNN网络中卷积池之后会跟上一个池化层，池化层的作用是提取局部均值与最大值，根据计算出来的值不一样就分为均值池化层与最大值池化层，一般常见的多为最大值池化层。池化的时候同样需要提供filter的大小、步长。</p>
+<h2 id="全连接（Full-Connection-Layer）"><a href="#全连接（Full-Connection-Layer）" class="headerlink" title="全连接（Full-Connection Layer）"></a>全连接（Full-Connection Layer）</h2><p><img src="/2018/06/04/认识卷积神经网络/fullconnection.png" alt="fullconnection"><br>上图的最后两层小圆圈就是全连接层，全连接层的作用就是将前面的二维数据输出成一维数据！<br>啊~终于快结束了~学到这里脑子已经感觉有些木了。别急马上结束~<br>看到上面这个图，我的第一反应是，它是如何把20x12x12变成100x1x1的？这里我们套用网上的一个例子:<br><img src="/2018/06/04/认识卷积神经网络/full0.jpg" alt="full"><br><img src="/2018/06/04/认识卷积神经网络/full1.jpg" alt="full1"><br>这个过程可以理解为在中间做了一个卷积,但是这里的卷积核与前面的输出层图像维度相同，都是5层，每层的滤波器都是相同的，但是我们有4096个卷积核。<br><img src="/2018/06/04/认识卷积神经网络/full2.jpg" alt="full2"><br>从上图我们可以看出，我们用一个3x3x5的filter 去卷积激活函数的输出,得到的结果就是一个fully connected layer 的一个神经元的输出，这个输出就是一个值<br>因为我们有4096个神经元<br>我们实际就是用一个3x3x5x4096的卷积层去卷积激活函数的输出。<br>“这一步卷积一个非常重要的作用就是把分布式特征representation映射到样本标记空间”—知乎：蒋竺波<br>例子：<br><img src="/2018/06/04/认识卷积神经网络/mao.jpg" alt="mao"><br>目标是检查图片中有没有猫，而不关心猫的位置。</p>
+<p>到这里我们明白了一点：卷积层就是在提取特征，全连接层就是在分类,全连接层中的没个数值就是判断前面的卷积层有没有提取到目标的某个特征的依据。比如全连接层输出为[1,0,1,1];则表示，除了第二个特征，其余的特征都检测到了。<br><img src="/2018/06/04/认识卷积神经网络/full3.jpg" alt="full3"><br>红色的神经元表示特征被找到。(激活了)<br>最终的输出形式：<br><img src="/2018/06/04/认识卷积神经网络/full4.jpg" alt="full4"><br>那么全连接层对模型影响参数就是三个：</p>
+<p>全接解层的总层数（长度）<br>单个全连接层的神经元数（宽度）<br>激活函数</p>
+<h2 id="输出层（Output-Layer）"><a href="#输出层（Output-Layer）" class="headerlink" title="输出层（Output Layer）"></a>输出层（Output Layer）</h2><p>……</p>
+<hr>
+<p>有了上面对卷积神经网络的了解，我们要继续了解一下其他内容，下面的前馈网络和BP网络都是对网络中权值更新的算法。</p>
+<h2 id="前馈神经网络"><a href="#前馈神经网络" class="headerlink" title="前馈神经网络"></a>前馈神经网络</h2><p>现在讲的都是前馈网络，后来人们发现权值更新使用了BP思想以后，才有了BP神经网络这个名词。</p>
+<h2 id="BP神经网络"><a href="#BP神经网络" class="headerlink" title="BP神经网络"></a>BP神经网络</h2><p>首先不要认为BP网络与卷积网络是并列关系，两者专注的领域不同，BP网络的目的是使用反向传递的思想来更新权值，而卷积网络的目的是降低网络中神经元的连接数量从而减少权值的计算。</p>
+<h1 id="其他卷积神经网络"><a href="#其他卷积神经网络" class="headerlink" title="其他卷积神经网络"></a>其他卷积神经网络</h1><ul>
+<li>LeNet，这是最早用于数字识别的CNN</li>
+<li>AlexNet， 2012 ILSVRC比赛远超第2名的CNN，比</li>
+<li>LeNet更深，用多层小卷积层叠加替换单大卷积层。</li>
+<li>ZF Net， 2013 ILSVRC比赛冠军</li>
+<li>GoogLeNet， 2014 ILSVRC比赛冠军</li>
+<li>VGGNet， 2014 ILSVRC比赛中的模型，图像识别略差于GoogLeNet，但是在很多图像转化学习问题(比如object detection)上效果奇好</li>
+</ul>
+<h1 id="深度学习"><a href="#深度学习" class="headerlink" title="深度学习"></a>深度学习</h1><h1 id="卷积神经网络的常用框架"><a href="#卷积神经网络的常用框架" class="headerlink" title="卷积神经网络的常用框架"></a>卷积神经网络的常用框架</h1><ul>
+<li>Caffe<ul>
+<li>源于Berkeley的主流CV工具包，支持C++,python,matlab</li>
+<li>Model Zoo中有大量预训练好的模型供使用</li>
+</ul>
+</li>
+<li>Torch<ul>
+<li>Facebook用的卷积神经网络工具包</li>
+<li>通过时域卷积的本地接口，使用非常直观</li>
+<li>定义新网络层简单</li>
+</ul>
+</li>
+<li>TensorFlow<ul>
+<li>Google的深度学习框架</li>
+<li>TensorBoard可视化很方便</li>
+<li>数据和模型并行化好，速度快</li>
+</ul>
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jianshu.com/p/fe428f0b32c1" target="_blank" rel="noopener">卷积神经网络</a><br><a href="https://www.zhihu.com/question/41037974" target="_blank" rel="noopener">全连接层的含义</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/感知器/" rel="tag"># 感知器</a>
+          
+            <a href="/tags/卷积神经网络/" rel="tag"># 卷积神经网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/29/从ANN到CNN/" rel="next" title="认识人工神经网络">
+                <i class="fa fa-chevron-left"></i> 认识人工神经网络
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/06/BP神经网络/" rel="prev" title="BP神经网络">
+                BP神经网络 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#卷积神经网络"><span class="nav-number">1.</span> <span class="nav-text">卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从入坑开始-——-CNN"><span class="nav-number">1.1.</span> <span class="nav-text">从入坑开始 —— CNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积"><span class="nav-number">1.2.</span> <span class="nav-text">卷积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积神经网络中的分层"><span class="nav-number">1.3.</span> <span class="nav-text">卷积神经网络中的分层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入层（Input-Layer）"><span class="nav-number">1.4.</span> <span class="nav-text">输入层（Input Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积层（Convention-Layer）"><span class="nav-number">1.5.</span> <span class="nav-text">卷积层（Convention Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#池化层（Sampling-Layer，Pooling-Layer）"><span class="nav-number">1.6.</span> <span class="nav-text">池化层（Sampling Layer，Pooling Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全连接（Full-Connection-Layer）"><span class="nav-number">1.7.</span> <span class="nav-text">全连接（Full-Connection Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出层（Output-Layer）"><span class="nav-number">1.8.</span> <span class="nav-text">输出层（Output Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前馈神经网络"><span class="nav-number">1.9.</span> <span class="nav-text">前馈神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BP神经网络"><span class="nav-number">1.10.</span> <span class="nav-text">BP神经网络</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他卷积神经网络"><span class="nav-number">2.</span> <span class="nav-text">其他卷积神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#深度学习"><span class="nav-number">3.</span> <span class="nav-text">深度学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#卷积神经网络的常用框架"><span class="nav-number">4.</span> <span class="nav-text">卷积神经网络的常用框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

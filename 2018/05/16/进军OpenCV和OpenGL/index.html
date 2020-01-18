@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OpenCV,OpenGL," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="近期开始做OpenCV和OpenGL方向的研究与开发工作了，感谢my的书卡，感谢GitHub和机械工业出版社，带我入门，带我编程，能够从一个门外汉进入这个领域。  OpenCV简介OpenCV是一个跨平台计算机视觉库，可以运行在Linux、Windows、Android和Mac OS操作系统上运行。在没有做这方面工作之前不太明白OpenCV与OpenGL的区别。现在让我来讲的话，大概可以这么理解：">
+<meta name="keywords" content="OpenCV,OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进军OpenCV和OpenGL">
+<meta property="og:url" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="近期开始做OpenCV和OpenGL方向的研究与开发工作了，感谢my的书卡，感谢GitHub和机械工业出版社，带我入门，带我编程，能够从一个门外汉进入这个领域。  OpenCV简介OpenCV是一个跨平台计算机视觉库，可以运行在Linux、Windows、Android和Mac OS操作系统上运行。在没有做这方面工作之前不太明白OpenCV与OpenGL的区别。现在让我来讲的话，大概可以这么理解：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv0.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv1.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv2.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv3.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv4.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv5.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv6.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv7.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv8.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv9.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv10.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv11.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv16.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv17.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv18.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv13.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv14.png">
+<meta property="og:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv15.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.225Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进军OpenCV和OpenGL">
+<meta name="twitter:description" content="近期开始做OpenCV和OpenGL方向的研究与开发工作了，感谢my的书卡，感谢GitHub和机械工业出版社，带我入门，带我编程，能够从一个门外汉进入这个领域。  OpenCV简介OpenCV是一个跨平台计算机视觉库，可以运行在Linux、Windows、Android和Mac OS操作系统上运行。在没有做这方面工作之前不太明白OpenCV与OpenGL的区别。现在让我来讲的话，大概可以这么理解：">
+<meta name="twitter:image" content="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/opencv0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/"/>
+
+
+
+
+
+  <title>进军OpenCV和OpenGL | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/05/16/进军OpenCV和OpenGL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">进军OpenCV和OpenGL</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-16T10:54:49+08:00">
+                2018-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机图形学/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机图形学</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>近期开始做OpenCV和OpenGL方向的研究与开发工作了，感谢my的书卡，感谢GitHub和机械工业出版社，带我入门，带我编程，能够从一个门外汉进入这个领域。</p>
+<hr>
+<h2 id="OpenCV简介"><a href="#OpenCV简介" class="headerlink" title="OpenCV简介"></a>OpenCV简介</h2><p>OpenCV是一个跨平台计算机视觉库，可以运行在Linux、Windows、Android和Mac OS操作系统上运行。在没有做这方面工作之前不太明白OpenCV与OpenGL的区别。现在让我来讲的话，大概可以这么理解：<strong>OpenCV是一个算法库</strong>，它实现了很多图形处理和计算机视觉的通用算法，而<strong>OpenGL是一个图形库</strong>，它实现了一些基本的计算机图形图像，可以方便的开发二维或者三维计算机应用程序。</p>
+<h2 id="1-Windows下配置OpenCV与VS2015集成环境"><a href="#1-Windows下配置OpenCV与VS2015集成环境" class="headerlink" title="1. Windows下配置OpenCV与VS2015集成环境"></a>1. Windows下配置OpenCV与VS2015集成环境</h2><p><strong>为了配置这个环境，中间遇到了无数的坑，一个一个解决，将这个过程中遇到的问题总结一下，写在这里。</strong><br>在做图像处理的时候，频繁使用到OpenCV中的算法，于是想系统的学习一下这方面的知识，买了一本《OpenCV By Example》照着里面的例子学习……</p>
+<h3 id="1-1-环境："><a href="#1-1-环境：" class="headerlink" title="1.1 环境："></a>1.1 <strong>环境：</strong></h3><p><em>Windows10 x64, VS2015, OpenCV3.3.0, Cmake3.11.1</em><br>首先下载OpenCV: <a href="https://opencv.org/releases.html" target="_blank" rel="noopener">https://opencv.org/releases.html</a><br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv0.png" alt="opencv"><br>Documentation是OpenCV的使用手册，source是源码，Win pack是编译后的opencv自解压包，我们这里可以选择下载源码或者下载编译后的自解压包。二者最基本的区别就是：前者需要我们本地编译，后者可以直接使用。我们将两个文件都下载下来:<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv1.png" alt="opencv3.3"></p>
+<h3 id="1-2-方法一：自解压包的安装与配置"><a href="#1-2-方法一：自解压包的安装与配置" class="headerlink" title="1.2 方法一：自解压包的安装与配置"></a>1.2 方法一：自解压包的安装与配置</h3><p>下载完成后的exe文件直接运行，就是自解压过程<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv2.png" alt="exe"><br>选择好目标文件夹（<strong>这里注意路径中不要有中文</strong>），解压完成后得到如下文件：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv3.png" alt="opencvfile"><br><strong>环境变量：</strong> 在windows的环境变量中的Path中添加opencv中的bin路径：例如我的是：C:\opencv\build\x64\vc14\bin<br><strong>vs配置：</strong> 在配置好环境变量后在VS2015中创建一个C++的win32控制台程序，然后开始配置这个项目的属性，首先在视图-&gt;其他窗口 中打开当前项目的属性管理器窗口:<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv4.png" alt="config"><br>因为我们前面配置的都是x64的环境，所以这里选择x64的Debug属性文件夹<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv5.png" alt="debug"><br>下面需要修改相关配置：</p>
+<ol>
+<li>VC++目录：<br>将下面的内容依次加入到VC++的包含目录(include path)<br>C:\opencv\build\include<br>C:\opencv\build\include\opencv<br>C:\opencv\build\include\opencv2<br>将下面内容依次加入到VC++库目录(lib path)<br>C:\opencv\build\x64\vc14\lib</li>
+<li>连接器目录：<br>链接器-&gt;输入-&gt;附加依赖项<br>将下面的lib加入到其中:<br>opencv_world330d.lib<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv6.png" alt="worldd.lib"><br>这里注意的是，有些地方可能会用到opencv_ts<em>*</em>.lib但是自解压包内是不包含这个lib的，需要我们使用自己编译的程序。<br>至此，OpenCV的自解压版已经配置完毕，可以直接在工程中调用OpenCV中的函数：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"opencv2/core.hpp"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"opencv2/highgui.hpp"</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mainOne</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Mat color = imread(<span class="string">"D:\\WorkSpace\\VSworkspace\\OpenCV\\OpencvBooks\\img\\lena.jpg"</span>);</span><br><span class="line">	<span class="comment">//图片必须添加到工程目下</span></span><br><span class="line">	<span class="comment">//也就是和test.cpp文件放在一个文件夹下！！！</span></span><br><span class="line">	imshow(<span class="string">"测试程序"</span>, color);</span><br><span class="line">	Mat gray = imread(<span class="string">"D:\\WorkSpace\\VSworkspace\\OpenCV\\OpencvBooks\\img\\lena.jpg"</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="comment">//写图像</span></span><br><span class="line">	imwrite(<span class="string">"D:\\WorkSpace\\VSworkspace\\OpenCV\\OpencvBooks\\img\\lena.jpg"</span>, gray);</span><br><span class="line">	<span class="comment">// 通过opencv函数获取相同像素</span></span><br><span class="line">	<span class="keyword">int</span> myrow = color.cols - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> myCol = color.rows - <span class="number">1</span>;</span><br><span class="line">	Vec3b pixel = color.at&lt;Vec3b&gt;(myrow,myCol);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Pixel value (B,G,R): ("</span> &lt;&lt; (<span class="keyword">int</span>)pixel[<span class="number">0</span>] &lt;&lt; <span class="string">","</span> &lt;&lt; (<span class="keyword">int</span>)pixel[<span class="number">1</span>] &lt;&lt; <span class="string">","</span> &lt;&lt; (<span class="keyword">int</span>)pixel[<span class="number">2</span>] &lt;&lt; <span class="string">")"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; color.size &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line">	<span class="comment">// 初始化矩阵 </span></span><br><span class="line">	Mat m = Mat::eye(<span class="number">5</span>, <span class="number">5</span>, CV_32F);</span><br><span class="line">	Mat n = Mat::ones(<span class="number">5</span>,<span class="number">5</span>,CV_32F);</span><br><span class="line">	Mat result = m*n;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; m &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="function">FileStorage <span class="title">fs</span><span class="params">(<span class="string">"test.yml"</span>, FileStorage::WRITE)</span></span>;</span><br><span class="line">	fs &lt;&lt; <span class="string">"result"</span> &lt;&lt; result;</span><br><span class="line">	fs.release();</span><br><span class="line">	imshow(<span class="string">"Lena BGR"</span>, color);</span><br><span class="line">	imshow(<span class="string">"Lena Gray"</span>, gray);</span><br><span class="line">	waitKey(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="1-3-方法二：本地编译再配置"><a href="#1-3-方法二：本地编译再配置" class="headerlink" title="1.3 方法二：本地编译再配置"></a>1.3 方法二：本地编译再配置</h3><p>找到前面下载的源码版的opencv，同时下载并安装cmake工具到本机。<br>然后查看这个文件夹，可以看到有cmakelists文件，这个就是cmake需要用的构建工程的文件<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv7.png" alt="opencv7"><br>然后选择source code和要build到的文件夹：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv8.png" alt="opencv8"><br>点击configure<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv9.png" alt="opencv9"><br>选择本机的 VS2015 Win64,然后Finish，这个过程是生成VS2015的opencv环境，并检验本机的vs环境对于opencv的必要依赖是否完整，这个过程需要一段时间,完成后，选择你需要build的文件，然后再点击Configure开始构建：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv10.png" alt="10"><br>然后点击Generate开始生成链接库，完成后就会发现build文件夹内已经存在了opencv的工程sln。<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv11.png" alt="11"><br>然后打开这个工程，找到CMakeTargets文件夹内的ALL_BUILD，进行编译：右键-&gt;生成，这个过程持续一段时间。编译完成后，再找到CMakeTargets文件夹内的INSTALL工程，再次执行生成，这样整个OpenCV的编译工作就完成了，生成了对应的动态链接库和可执行文件。可以看到在build文件夹内的的install文件夹为编译生成的文件：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv16.png" alt="opencv16"><br>我们对比一下编译完成的OpenCV 和官方的自解压版本中的内容：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv17.png" alt="opencv17"><br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv18.png" alt="opencv18"><br>可以看到编译版本比自解压版多一些链接库和lib文件。但是同时缺少 opencv_world***.dll 以及 opencv_world***.lib<br>后面的操作就和自解压版相同，如果需要使用编译版本的OpenCV，就需要把环境变量配置成刚刚编译好的内容，同时设置VS中的属性页即可。</p>
+<hr>
+<p><strong>PS:</strong> 我在前面的执行cmake的过程中，多勾选了BUILD_openc_world 和 WITH_QT 导致在VS中编译OpenCV源码的过程中出现了很多错误：<br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv13.png" alt="opencv13"><br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv14.png" alt="opencv14"><br><img src="/2018/05/16/进军OpenCV和OpenGL/opencv15.png" alt="opencv15"><br>至今不知道如何解决，感觉是本机的QT配置有问题。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenCV/" rel="tag"># OpenCV</a>
+          
+            <a href="/tags/OpenGL/" rel="tag"># OpenGL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/25/特征检测技术总结/" rel="next" title="特征检测技术总结">
+                <i class="fa fa-chevron-left"></i> 特征检测技术总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/21/深入浅出OpenGL/" rel="prev" title="深入浅出OpenGL">
+                深入浅出OpenGL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenCV简介"><span class="nav-number">1.</span> <span class="nav-text">OpenCV简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Windows下配置OpenCV与VS2015集成环境"><span class="nav-number">2.</span> <span class="nav-text">1. Windows下配置OpenCV与VS2015集成环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-环境："><span class="nav-number">2.1.</span> <span class="nav-text">1.1 环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-方法一：自解压包的安装与配置"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 方法一：自解压包的安装与配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-方法二：本地编译再配置"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 方法二：本地编译再配置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

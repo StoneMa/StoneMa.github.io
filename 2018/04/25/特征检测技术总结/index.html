@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机视觉,图像处理,特征," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="写在前面对于模式识别，到了研二终于发自内心的体会到它的应用领域已经广阔到一种不可描述的状态，大到人工智能，数据挖掘，，机器学习，小到特征提取，图像处理，都会有模式识别的影子与你相随，这种感觉就像数学领域中的欧拉，拉格朗日，与柯西，爷仨~贯穿你的整个学习过程，如影随形。在读研以前，从没去思考过计算机是如何识别图片的、如何认知文字的、如何回答语音的……直到后来想做三维模型检索相关领域的内容，本以为不会">
+<meta name="keywords" content="计算机视觉,图像处理,特征">
+<meta property="og:type" content="article">
+<meta property="og:title" content="特征检测技术总结">
+<meta property="og:url" content="https://stonema.github.io/2018/04/25/特征检测技术总结/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="写在前面对于模式识别，到了研二终于发自内心的体会到它的应用领域已经广阔到一种不可描述的状态，大到人工智能，数据挖掘，，机器学习，小到特征提取，图像处理，都会有模式识别的影子与你相随，这种感觉就像数学领域中的欧拉，拉格朗日，与柯西，爷仨~贯穿你的整个学习过程，如影随形。在读研以前，从没去思考过计算机是如何识别图片的、如何认知文字的、如何回答语音的……直到后来想做三维模型检索相关领域的内容，本以为不会">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/04/25/特征检测技术总结/边缘检测.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.209Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="特征检测技术总结">
+<meta name="twitter:description" content="写在前面对于模式识别，到了研二终于发自内心的体会到它的应用领域已经广阔到一种不可描述的状态，大到人工智能，数据挖掘，，机器学习，小到特征提取，图像处理，都会有模式识别的影子与你相随，这种感觉就像数学领域中的欧拉，拉格朗日，与柯西，爷仨~贯穿你的整个学习过程，如影随形。在读研以前，从没去思考过计算机是如何识别图片的、如何认知文字的、如何回答语音的……直到后来想做三维模型检索相关领域的内容，本以为不会">
+<meta name="twitter:image" content="https://stonema.github.io/2018/04/25/特征检测技术总结/边缘检测.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/04/25/特征检测技术总结/"/>
+
+
+
+
+
+  <title>特征检测技术总结 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/04/25/特征检测技术总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">特征检测技术总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T15:36:34+08:00">
+                2018-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>对于模式识别，到了研二终于发自内心的体会到它的应用领域已经广阔到一种不可描述的状态，大到人工智能，数据挖掘，，机器学习，小到特征提取，图像处理，都会有模式识别的影子与你相随，这种感觉就像数学领域中的欧拉，拉格朗日，与柯西，爷仨~贯穿你的整个学习过程，如影随形。在读研以前，从没去思考过计算机是如何识别图片的、如何认知文字的、如何回答语音的……直到后来想做三维模型检索相关领域的内容，本以为不会是太难的东西，到后来才发现，这里面的内容足够我消化半辈子了……我这个人大概率还是脑子太笨了，最开始的时候，通过各种手段去了解图像处理，深度学习这方面的知识，很长时间以来，都没有深入理解这些内容的精髓，没有清晰的知识脉络。什么是滤波器，什么是卷积核，什么是池化，什么是采样，什么是激活函数，什么是分类器，sigmoid是干什么的，全连接是干什么的，怎么有的CNN，什么是前馈网络，什么是反向传递。那些乱七八糟的算子有什么用，SIFT，SVM跟这些东西又是什么关系……等等等等一系列的名称一下子涌过来，搞得我迷迷糊糊。<br>通过不断地学习，不断地温习以往的知识，我开始有了一点点清晰一点的知识脉络。也感谢自己养成了写博客的习惯，今后会慢慢地将自己的理解与认知写下来，理清自己的思路与见解，也供他人参考。如果有读者看到一些错误或者有待商榷的地方，希望您能够不吝指出，与我联系，共同进步。</p>
+<h2 id="从介绍模式识别开始"><a href="#从介绍模式识别开始" class="headerlink" title="从介绍模式识别开始"></a>从介绍模式识别开始</h2><p>刚读研一的时候，张老师让我读《模式识别》（《Pattern Recognition》）这本书。而实际在我真正接触图像识别的工程之前，这本书我仅仅看了第一章，仅仅看了一些概念性的东西，而后面的算法讲解，贝叶斯决策，分类器，支持向量机，多层感知机等等，都因为内容中的公式太多，直接就怕了……感觉这本书会非常的难啃。而后来，在我拜读OpenCV中的关于SVM的算法讲解的时候，有一些地方弄不明白，魏老师让我去看模式识别的分类器这部分，我才茅塞顿开。慢慢也开始进入了良性循环的节奏，看一些公式也不闹心了，也知道一篇论文的重点该看哪里了。非常的nice。</p>
+<p><em>PS：假如我不干编程工作了，大概率可以当个讲师吧！哈哈哈，因为遇到的大部分老师讲一些理论的时候讲的是真的烂啊！！不怪学生们不爱听~自己真正弄明白一些理论之后，真的觉得自己的吹毛求疵，刨根问底都是值得的！研究生阶段的学习，不能是单纯的调用函数接口，还是要深入的了解这个函数。社会的精英阶层，领导阶层什么时候才能真正意识到我们国家的教育问题呢？富人家的孩子暂且可以摆脱经济压力，去国外镀金，花更多的时间投资在个人能力的提升上，但是那些群穷人家的孩子怎么办呢？这大概就是差距慢慢拉大的原因吧~高等教育的改革势在必行，如果能够因材施教，学生找得到自己的兴趣方向，使得学习的驱动力来自于自身，而不是强行往某个领域推。。。我想这样会从上往下传导出一种新的活力吧！估计也不会有这么多人的人生目标是逃离高考大省了吧！</em></p>
+<h3 id="模式识别简介"><a href="#模式识别简介" class="headerlink" title="模式识别简介"></a>模式识别简介</h3><p>传统的模式识别包括且不仅限于一下内容：</p>
+<ul>
+<li>语音识别</li>
+<li>自然语言识别</li>
+<li>字符与文字识别</li>
+<li>图像识别</li>
+<li>动作识别</li>
+</ul>
+<p>而现在比较流行的甚至可以说烂大街的深度学习，也属于模式识别建立分类器的范畴，而这个范畴又包括了</p>
+<ul>
+<li>监督模式识别 (supervised pattern recognition) </li>
+<li>非监督模式识别 (unsupervised pattern recognition)</li>
+</ul>
+<p>而对于监督式模式识别，我们了解的大多数深度学习模型都属于这个范畴。这两种问题的处理方式是有一些区别的。</p>
+<ul>
+<li><strong>对于处理监督模式识别问题的一般步骤是:</strong></li>
+<li>分析问题，分析给定数据哪些因素可以与分类有关。</li>
+<li>原始特征获取。</li>
+<li>特征提取与选择。</li>
+<li>分类器设计，用已知样本进行分类训练。</li>
+<li>分类决策。</li>
+<li><strong>对于处理非监督模式识别问题的一般步骤是：</strong></li>
+<li>分析问题；</li>
+<li>原始特征获取；</li>
+<li>特征提取与选择；</li>
+<li>聚类分析；</li>
+<li>结果解释；<br>对于模式识别中的识别而言，引用维基百科中模式识别的内容来简单解释：<br><code>识别过程与人类的学习过程相似。以光学字符识别之“汉字识别”为例：首先将汉字图像进行处理，抽取主要表达特征并将特征与汉字的代码存在计算机中。就像老师教我们“这个字叫什么、如何写”记在大脑中。这一过程叫做“训练”。识别过程就是将输入的汉字图像经处理后与计算机中的所有字进行比较，找出最相近的字就是识别结果。这一过程叫做“匹配”。</code><br>所以我们大致可以知道模式识别至少包含两个最重要的过程：特征检测与特征匹配（也就是识别）。</li>
+</ul>
+<h2 id="特征检测（特征提取）"><a href="#特征检测（特征提取）" class="headerlink" title="特征检测（特征提取）"></a>特征检测（特征提取）</h2><p>特征检测也是特征提取，它是计算机图像处理整个流水线工作中上游的核心工作了，比如我们拿到一副图片，首先需要进行预处理，这个预处理包括对图形的剪裁，旋转，平移，缩放，二值化等等简单的操作，下一步就是要进行特征检测了，这也是将一个图形从广义图片的范畴调整到数值化，数字化的开端，从这开始我们知道了人们是如何巧妙的将“图片”这种人类感性认知的东西映射到计算机的内存当中的，又是如何让计算机认识它的！</p>
+<p>特征检测可以分为<strong>边缘特征检测</strong>，<strong>角点特征检测</strong>，<strong>斑点特征检测</strong>，<strong>脊检测</strong></p>
+<h3 id="边缘检测-edg-detection"><a href="#边缘检测-edg-detection" class="headerlink" title="边缘检测 [edg detection]"></a>边缘检测 [edg detection]</h3><p>对于边缘检测，如果你上网搜索一下，首先查到的就是各种边缘检测算子，而这些算子无非就是一些$2\ast2$或者$3\ast3$的矩阵罢了。它们又是如何检测图像的边缘的呢？对于一个灰度图像而言，一张图片不过是灰度值从0~255构成的m*n的矩阵罢了。图像矩阵中的每个位置的像素值都是0~255之间的一个数，0就表示没有灰度，就是黑色；255就表示满级的灰度，就是白色。<br>而图片中的边缘是灰度值变化较为明显的地方，这些地方的值与前面的各种边缘滤波器——也就是对应的矩阵做卷积，就会得到高响应，从而判断出哪里是图像的边缘。<br>具体的各类边缘检测算子的区别，我们后续的文章里会继续讨论。但是，到这里，我感觉其实已经可以入门了。实际上检测边缘不是一个简单的问题，如果将边缘认为是一定数量点亮度发生变化的地方，那么边缘检测大体上就是计算这个亮度变化的导数。下图中这个例子，我们的数据是一行不同点亮度的数据。例如，在下面的1维数据中我们可以直观地说在第4与第5个点之间有一个边界：</p>
+<p><img src="/2018/04/25/特征检测技术总结/边缘检测.png" alt="边缘检测"></p>
+<p>除非场景中的物体非常简单并且照明条件得到了很好的控制，否则确定一个用来判断两个相邻点之间有多大的亮度变化才算是有边界的阈值，并不是一件容易的事。实际上，这也是为什么边缘检测不是一个简单问题的原因之一。</p>
+<h4 id="边缘检测的方法"><a href="#边缘检测的方法" class="headerlink" title="边缘检测的方法"></a>边缘检测的方法</h4><p>有许多用于边缘检测的方法，他们大致可分为两类：<strong>基于搜索和基于零交叉</strong>。</p>
+<ol>
+<li>基于搜索的边缘检测方法首先计算边缘强度，通常用一阶导数表示，用计算估计边缘的局部方向，通常采用梯度的方向，并利用此方向找到局部梯度模的最大值。</li>
+<li>基于零交叉的方法找到由图像得到的二阶导数的零交叉点来定位边缘。<br><em>滤波做为边缘检测的预处理通常是必要的，通常采用高斯滤波。</em><br>像我们常见的边缘检测算子包括但不止于：</li>
+</ol>
+<ul>
+<li>Roberts（这是最简单了算子）</li>
+<li>Canny （目前最常用的）</li>
+<li>Sobel</li>
+<li>Isotropic Sobel</li>
+<li>Prewitt</li>
+<li>Laplacian<br>等等一系列算子，都是用来做边缘检测的。<h3 id="角检测（兴趣点检测）-interest-point-detection"><a href="#角检测（兴趣点检测）-interest-point-detection" class="headerlink" title="角检测（兴趣点检测）[interest point detection]"></a>角检测（兴趣点检测）[interest point detection]</h3>与边缘同样重要的一种特征就是角，也是角点，兴趣点；角点的检测经常用于三维建模以及物体识别中。两条边的交点形成一个角（点）。而图像的要点（也称为受关注点）是指图像中具有代表性以及健壮性的点。也就是说，<strong>要点可以是角（点），也可以不是</strong>，例如局部亮点或暗点，线段终点，或者曲线上的曲率最大值点。在实际应用中，很多所谓的（角）点检测算法其实是检测要点，而不仅仅是角（点）。所以，如果我们只想检测角的话，还需要对检测出的要点进一步分析。例如也可以先经过边检测，之后在做一些后处理来检测角。<h4 id="角，兴趣点检测方法"><a href="#角，兴趣点检测方法" class="headerlink" title="角，兴趣点检测方法"></a>角，兴趣点检测方法</h4></li>
+</ul>
+<ol>
+<li>$Moravec$ 角检测算法<br>这是最早使用来做角检测的做法，他首先定义所谓的“角”就是那些自我相似程度低的点。这个算法检查所有图像中的像素，并考虑以该像素为中心点的一片范围，该范围与他周围覆盖最大的另一个范围的相似度做为参考，而相似度通常是将两个范围的对应点计算误差的平方和<code>(SSD: Sum of Squared differences)</code> ，越小代表相似度越高。</li>
+<li>$Harris\,\&amp;\,Stephens/ Plessey / Shi-Tomasi$ 角检测算法<br>$Harris\,\&amp;\,Stephens$改善了$Moravec$的方法，他们直接考虑每个像素沿着特定方向处的像素的SSD，而不是使用与周围像素范围的SSD。详细内容可以查看之前的文章：<br><a href="Harris &amp; Stephens改善了Moravec的方法，他们直接考虑每个像素沿着特定方向处的像素的SSD，而不是使用与周围像素范围的SSD。">Harris Corner Detection</a></li>
+<li>$Förstner$ 角检测<br>在某些情况，会希望更精确地去计算角的位置，为了得到近似值，Förstner 算法可以解出闭集上的角附近范围中的所有切线与最接近这些切线的点，该算法依赖于在一个理想的角附近。<br>这个算法感觉有些复杂目前还没有深入了解…</li>
+<li>多尺度 $Harris$ 算子<br>…这个就看不懂在讲什么了<h3 id="斑点检测"><a href="#斑点检测" class="headerlink" title="斑点检测"></a>斑点检测</h3></li>
+</ol>
+<ul>
+<li>Laplacian of Gaussian (LoG)</li>
+<li>高斯差</li>
+<li>Determinant of Hessian (DoH)</li>
+<li>最大稳定极值区域</li>
+<li>PCBR<h3 id="脊检测"><a href="#脊检测" class="headerlink" title="脊检测"></a>脊检测</h3></li>
+<li>霍夫变换</li>
+<li>广义霍夫变换<h3 id="特征描述"><a href="#特征描述" class="headerlink" title="特征描述"></a>特征描述</h3></li>
+<li>SIFT </li>
+<li>SURF </li>
+<li>GLOH </li>
+<li>HOG</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机视觉/" rel="tag"># 计算机视觉</a>
+          
+            <a href="/tags/图像处理/" rel="tag"># 图像处理</a>
+          
+            <a href="/tags/特征/" rel="tag"># 特征</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/24/高频信号与低频信号-图像锐化与模糊/" rel="next" title="高频信号与低频信号,图像锐化与模糊">
+                <i class="fa fa-chevron-left"></i> 高频信号与低频信号,图像锐化与模糊
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/16/进军OpenCV和OpenGL/" rel="prev" title="进军OpenCV和OpenGL">
+                进军OpenCV和OpenGL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从介绍模式识别开始"><span class="nav-number">2.</span> <span class="nav-text">从介绍模式识别开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模式识别简介"><span class="nav-number">2.1.</span> <span class="nav-text">模式识别简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征检测（特征提取）"><span class="nav-number">3.</span> <span class="nav-text">特征检测（特征提取）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#边缘检测-edg-detection"><span class="nav-number">3.1.</span> <span class="nav-text">边缘检测 [edg detection]</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#边缘检测的方法"><span class="nav-number">3.1.1.</span> <span class="nav-text">边缘检测的方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角检测（兴趣点检测）-interest-point-detection"><span class="nav-number">3.2.</span> <span class="nav-text">角检测（兴趣点检测）[interest point detection]</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#角，兴趣点检测方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">角，兴趣点检测方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#斑点检测"><span class="nav-number">3.3.</span> <span class="nav-text">斑点检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#脊检测"><span class="nav-number">3.4.</span> <span class="nav-text">脊检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征描述"><span class="nav-number">3.5.</span> <span class="nav-text">特征描述</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

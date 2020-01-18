@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,有监督学习,SVM,Supervised Learning," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="了解SVM (Support Vector Machine—支持向量机)线性可分数据SVM(Support Vector Machine)是支持向量机，是常见的一种判别方法。在机器学习领域，是一个有监督的学习模型（通过改进，当数据未被标记时，不能进行监督式学习，需要用非监督式学习，它会尝试找出数据到簇的自然聚类，并将新数据映射到这些已形成的簇。将支持向量机改进的聚类算法被称为支持向量聚类），通常用">
+<meta name="keywords" content="机器学习,有监督学习,SVM,Supervised Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MachineLearning之SVM">
+<meta property="og:url" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="了解SVM (Support Vector Machine—支持向量机)线性可分数据SVM(Support Vector Machine)是支持向量机，是常见的一种判别方法。在机器学习领域，是一个有监督的学习模型（通过改进，当数据未被标记时，不能进行监督式学习，需要用非监督式学习，它会尝试找出数据到簇的自然聚类，并将新数据映射到这些已形成的簇。将支持向量机改进的聚类算法被称为支持向量聚类），通常用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/svm_basics1.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/svm_basics2.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/svm.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/d.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/Svm_max_sep_hyperplane_with_margin.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/svm_basics3.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.169Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MachineLearning之SVM">
+<meta name="twitter:description" content="了解SVM (Support Vector Machine—支持向量机)线性可分数据SVM(Support Vector Machine)是支持向量机，是常见的一种判别方法。在机器学习领域，是一个有监督的学习模型（通过改进，当数据未被标记时，不能进行监督式学习，需要用非监督式学习，它会尝试找出数据到簇的自然聚类，并将新数据映射到这些已形成的簇。将支持向量机改进的聚类算法被称为支持向量聚类），通常用">
+<meta name="twitter:image" content="https://stonema.github.io/2018/04/17/MachineLearning之SVM/svm_basics1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/04/17/MachineLearning之SVM/"/>
+
+
+
+
+
+  <title>MachineLearning之SVM | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/04/17/MachineLearning之SVM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MachineLearning之SVM</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T17:23:54+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="了解SVM-Support-Vector-Machine—支持向量机"><a href="#了解SVM-Support-Vector-Machine—支持向量机" class="headerlink" title="了解SVM (Support Vector Machine—支持向量机)"></a>了解SVM (Support Vector Machine—支持向量机)</h2><h2 id="线性可分数据"><a href="#线性可分数据" class="headerlink" title="线性可分数据"></a>线性可分数据</h2><p>SVM(Support Vector Machine)是支持向量机，是常见的一种判别方法。在机器学习领域，是一个<strong>有监督</strong>的学习模型（通过改进，当数据未被标记时，不能进行监督式学习，需要用非监督式学习，它会尝试找出数据到簇的自然聚类，并将新数据映射到这些已形成的簇。将支持向量机改进的聚类算法被称为支持向量聚类），通常用来进行模式识别、分类以及回归分析。</p>
+<h3 id="SVM的目的"><a href="#SVM的目的" class="headerlink" title="SVM的目的"></a>SVM的目的</h3><p>通过上一章的KNN，我们已经了解到，它可以对数据进行分类处理了：思想就是通过计算每个元素与待分类元素的距离来进行判断。这样做的缺点是需要大量的计算和存储（因为需要计算每个点到待测点的距离）;而SVM就是为了解决这样的问题而诞生的.如下图:<br><img src="/2018/04/17/MachineLearning之SVM/svm_basics1.png" alt="svm_basics"><br>考虑这种情况：我们有一条线，它的函数形式为：$f(x) = ax<em>{1}+bx</em>{2}+c$（x为测试数据）, 通过这条线，可以将数据划分成两个部分。（如上图中的线），当我们新得到一个测试数据$X$的时候，只需要将$X$代入到函数$f(x)$中进行计算。如果$f(x) &gt; 0$ 这个测试样本就属于蓝色的类别，否则它属于红色的类别。我们把这个函数对应的直线叫做：<strong>决策边界(Decision Boundary)</strong>，这种判断的形式非常简单，而且节省内存。<br><strong>像这类我们可以通过使用一条直线（或者高维的超平面）将其分为两部分的数据，我们称其为：线性可分数据。</strong><br>所以，在上面的图片中我们可以找到很多这样的直线，那么，采用哪一条直线是合理的呢？答案是：距离两侧的点越远越好，这样是最好的分类边界(目的是对抗噪声)；因此，SVM所做的就是找到一条直线（或超平面），最大化它与训练样本的距离。类似图像中通过中心的粗线。<br><img src="/2018/04/17/MachineLearning之SVM/svm_basics2.png" alt="svm_basics2"><br><strong>为了找到这个决策边界，我们需要一些训练数据，事实上，我们仅需要两个类别相邻处的一部分数据就可以了。</strong>在我们的上图中的例子中，两个类别边界的的临近数据我们选择的分别是两个红色的方块和一个蓝色的圆圈。我们把他们叫做：<strong>支持向量（Support Vectors）</strong>，通过他们的线（虚线）叫做：<strong>支持平面(Support Planes)</strong>。通过他们足以发现我们需要找到的<strong>决策边界</strong>。<br>举个例子：蓝色数据是通过$w^{T}x+b<em>{0}&gt;1$来表示的，同时红色数据是由$w^{T}x+b</em>{0}&lt;-1$来表示的。（$w$是权重向量$(w=[w<em>{1},w=</em>{2},w<em>{3},…,w</em>{n}])$）同时$x$是特征向量$(x=[x<em>{1},x</em>{2},x<em>{3},…,x</em>{n}])$。$b<em>{0}$ 是 <code>bias</code>偏置项。决策边界的表示为：$w^{T}x+b</em>{0}=0$ 。从支持向量到决策边界的最小距离由下式给出$distance<em>{support \, vectors}=\frac{1}{||w||}$，<code>margin</code>是这个边界距离两倍，我们需要的是最大化的<code>margin</code>。如图中的例子，我们需要找到了一个最小化的<code>function</code>:$L(w,b</em>{0})$它的公式构成如下：</p>
+<script type="math/tex; mode=display">\min_{w,b_{0}}L(w,b_{0} = \frac{1}{2}||w||^{2})subject\ to\ t_{i}(w^{T}x+b_{0})\geqslant1\forall{i}</script><p>其中$t<em>{i}$是每一个类的标签label，$t</em>{i}\in {-1,1}$</p>
+<h3 id="对于上述公式的解读"><a href="#对于上述公式的解读" class="headerlink" title="对于上述公式的解读"></a>对于上述公式的解读</h3><p>上面讲到的SVM的核心就是：<strong>使得超平面与和它距离最近的点的距离最大化。</strong>这个距离，我们就可以理解成几何距离；很好理解，例如对于上图中的二维平面，就是点到直线的距离（这里直线就是超平面）；对于三维空间，就是点到平面的距离；以及高维空间的点到超平面的距离；计算公式都是相同的。在SVM中，把这个几何距离叫做：<strong>几何间隔</strong>。<br><img src="/2018/04/17/MachineLearning之SVM/svm.jpg" alt="svm"></p>
+<p>例如，在上图的二维空间中，点A到分隔超平面（直线）的距离即为线段AB的长度。几何间隔的计算公式如下：（其中$y^{i}$表示数据点的类别标签，$w,b$分别是超平面$w^{T}x+b=0$的参数）</p>
+<script type="math/tex; mode=display">\gamma ^{(i)}=y^{(i)}((\frac{w}{||w||})^{T}x^{(i)}+\frac{b}{||w||})</script><p>需要注意的是这里分子上是没有绝对值符号的。而我们通常求的距离公式中是有绝对值符号的。（<strong>这里后续会详细说明</strong>）</p>
+<hr>
+<h4 id="距离公式的推导过程："><a href="#距离公式的推导过程：" class="headerlink" title="距离公式的推导过程："></a>距离公式的推导过程：</h4><p>我们知道对于二维平面上的点到直线的距离公式为:</p>
+<script type="math/tex; mode=display">d=\frac{|Ax+By+C|}{\sqrt{A^{2}+B^{2}}}</script><p><strong>PS：这个公式的推导过程如下：</strong><br>运用三角形面积相等法则:<br><img src="/2018/04/17/MachineLearning之SVM/d.jpg" alt="d"><br>我们已知$P(x<em>{0},y</em>{0})$,直线方程为：$Ax+By+C=0$。三角形$\triangle PMN$的面积等于$\frac{PM \bullet PN} {2} = \frac{MN \bullet PO} {2}$所以，我们把$P$点坐标$(x<em>{0},y</em>{0})$中的$x<em>{0}$带入到直线方程中，可以得到直线上横坐标为$x</em>{0}$的点的纵坐标，然后用这个坐标减去$P$点的纵坐标，再取模就可以得到$PM$的长度。同理可以得到PN的长度。</p>
+<script type="math/tex; mode=display">\because |PM| = |\frac{Ax_{0}+By_{0}+C}{B}|</script><script type="math/tex; mode=display">|PN| = |\frac{Ax_{0}+By_{0}+C}{A}|</script><script type="math/tex; mode=display">\therefore |PO| = \frac{|PM|*|PN|}{\sqrt{|PM|^{2}+|PN|^{2}}}</script><p>对于三维空间中的距离公式:</p>
+<script type="math/tex; mode=display">d=\frac{|Ax+By+Cz+D|}{\sqrt{A^{2}+B^{2}+C_{2}}}</script><p>高维空间：</p>
+<script type="math/tex; mode=display">d=\frac{|A_{1}x_{1}+A_{2}x_{2}+...A_{n}x_{n}|}{\sqrt{A_{1}^{2}+A_{2}^{2}+...+A_{n}^{2}}}</script><p>所以，以向量的形式来书写这个公式，高维空间的<strong>几何距离</strong>为：</p>
+<script type="math/tex; mode=display">d = \frac{|w^{T}x+b|}{||w||}</script><hr>
+<p>所以通过上面的推导，我们可以得知高维空间的几何间隔就是这样的计算方式这里的$y^{(i)}$是$x^{(i)}$对应的标签类，属于[-1,+1]与函数间隔做乘后可以判断出是否分类正确：</p>
+<script type="math/tex; mode=display">\gamma ^{(i)}=y^{(i)}((\frac{w}{||w||})^{T}x^{(i)}+\frac{b}{||w||})</script><p>可以看到这个公式与上面的不同是后者是没有绝对值符号的，<br>而SVM中的<strong>函数间隔</strong>就是指的上式中的分子：$y^{(i)}(w^{T}x+b)$ 也就是未归一化之前的距离。并且函数间隔是带正负号的，也就是表示样本集是属于正样本还是负样本，通过函数间隔是可以得出的。这个公式可以认作是任意样本点到超平面的距离。<br>更要注意的一点是：$y^{(i)}$是与后面的同号的，这样才能保证分类是正确的。才能使得乘积是大于0的。<br>下图中，在超平面上侧的数据集带入到超平面公式中是 $w^{T}x^{(i)}+b &lt; 0$，在超平面下侧的数据集带入到超平面公式中 $w^{T}x^{(i)}+b &gt; 0$，这样的话，$y^{(i)}$ 的值就是要保证与前面的公式同号，上半部分的$y^{(i)}$值应该是负的，下半部分的$y^{(i)}$值应该是正的。（这里$y^{(i)}$怎么确定的，到现在也不明白。）</p>
+<p><strong>2018.5.9更新：[$y^{(i)}$标签的由来，以及实例介绍]</strong><br>我们考虑以下形式的n点测试集：$(\vec{x<em>{1}},y</em>{1}),…,(\vec{x<em>{n}},y</em>{n})$其中$y<em>{i}$是1或者-1，表明点$\vec{x</em>{i}}$中每个都是一个$p$ 维实向量。我们想要得到的是将$y<em>{i}=1$的点集与$y</em>{i}=-1$的点集分开的“最大间隔超平面”，使得超平面与最近的点$\vec{x_{i}}$之间的距离最大化。任何超平面都可以写作满足以下方程的点集$\vec{x}$。</p>
+<script type="math/tex; mode=display">
+\vec{w} \cdot \vec{x} -b=0</script><p>公式很好理解：实际就是三维空间中平面表示法的一般式$Ax+By+Cz+D=0$;因为$A,B,C$可以构成一个平面的法向量，所以这里的$\vec{w}$也是法向量，$\frac{b}{||\vec{w}||}$决定从原点沿着法向量方向到差平面的偏移量。</p>
+<p><img src="/2018/04/17/MachineLearning之SVM/Svm_max_sep_hyperplane_with_margin.png" alt="wikipadia_SVM"></p>
+<p>实际：这个$w^{T}x^{(i)}+b$就是一个分类器，而分类器不过就是二维平面中的直线，三维空间中的平面，高维空间中的超平面罢了。</p>
+<hr>
+<h3 id="关于-y-i"><a href="#关于-y-i" class="headerlink" title="关于$y(i)$"></a>关于$y(i)$</h3><p>$y(i)$是样本数据的标签，$y(i)\in {-1,1}$</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+(w \cdot x_{i})+b \geqslant 1,& y_{i}=+1\\
+(w \cdot x_{i})+b \leqslant 1,& y_{i}=-1
+\end{cases}</script><p>如上面的图像所示：离超平面最近的点到最优超平面的距离就是$margin$，我们要优化的，就是使得这个$margin$最大化。又因为最大间隔超平面（也就是最优超平面）位于两个数据集分割平面的中间，而分割两个数据集的平面是无数多的，（可以称为超平面簇）而超平面簇的两个最边缘的平面表达式为：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\vec{w}\cdot\vec{x}-b=1 \\
+\vec{W}\cdot\vec{x}-b=-1
+\end{cases}</script><p>不难得到两个超平面的距离就是$\frac{2}{||\vec{w}||}$，因此我们需要最大化间隔，就是最小化$||\vec{w}||$。同时为了使得样本数据点都在超平面的间隔以外，我们就有了上面的公式：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+(w \cdot x_{i})+b \geqslant 1,& y_{i}=+1\\
+(w \cdot x_{i})+b \leqslant 1,& y_{i}=-1
+\end{cases}</script><p>最大间隔超平面完全是由最靠近它的那些 ${\displaystyle {\vec {x}}<em>{i}}$ 确定的。这些 ${\displaystyle {\vec {x}}</em>{i}}$ 叫做支持向量。</p>
+<h2 id="对于线性不可分数据（待续）"><a href="#对于线性不可分数据（待续）" class="headerlink" title="对于线性不可分数据（待续）"></a>对于线性不可分数据（待续）</h2><p><img src="/2018/04/17/MachineLearning之SVM/svm_basics3.png" alt="svm_basics3"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/有监督学习/" rel="tag"># 有监督学习</a>
+          
+            <a href="/tags/SVM/" rel="tag"># SVM</a>
+          
+            <a href="/tags/Supervised-Learning/" rel="tag"># Supervised Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/17/MachineLearning之KNN/" rel="next" title="MachineLearning之KNN">
+                <i class="fa fa-chevron-left"></i> MachineLearning之KNN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/24/高频信号与低频信号-图像锐化与模糊/" rel="prev" title="高频信号与低频信号,图像锐化与模糊">
+                高频信号与低频信号,图像锐化与模糊 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#了解SVM-Support-Vector-Machine—支持向量机"><span class="nav-number">1.</span> <span class="nav-text">了解SVM (Support Vector Machine—支持向量机)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性可分数据"><span class="nav-number">2.</span> <span class="nav-text">线性可分数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM的目的"><span class="nav-number">2.1.</span> <span class="nav-text">SVM的目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对于上述公式的解读"><span class="nav-number">2.2.</span> <span class="nav-text">对于上述公式的解读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#距离公式的推导过程："><span class="nav-number">2.2.1.</span> <span class="nav-text">距离公式的推导过程：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-y-i"><span class="nav-number">2.3.</span> <span class="nav-text">关于$y(i)$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对于线性不可分数据（待续）"><span class="nav-number">3.</span> <span class="nav-text">对于线性不可分数据（待续）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

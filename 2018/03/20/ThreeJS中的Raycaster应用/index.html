@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Three.js," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="总结Three.js中的Raycaster的使用经验先上图：   图中的热点查询自数据库，同时鼠标点击可以添加热点 功能简介：这个项目是按照‘党’的需求做的，党给提出的需求是：    1. 能够加载三维模型。     2. 能切换三维模型。     3. 能在模型上点击添加热点annotation。     4. 热点上可以修改标注信息。     5. 鼠标可以操作模型，包括放缩和旋转平移。">
+<meta name="keywords" content="Three.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThreeJS中的Raycaster应用">
+<meta property="og:url" content="https://stonema.github.io/2018/03/20/ThreeJS中的Raycaster应用/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="总结Three.js中的Raycaster的使用经验先上图：   图中的热点查询自数据库，同时鼠标点击可以添加热点 功能简介：这个项目是按照‘党’的需求做的，党给提出的需求是：    1. 能够加载三维模型。     2. 能切换三维模型。     3. 能在模型上点击添加热点annotation。     4. 热点上可以修改标注信息。     5. 鼠标可以操作模型，包括放缩和旋转平移。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/03/20/ThreeJS中的Raycaster应用/0.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.180Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThreeJS中的Raycaster应用">
+<meta name="twitter:description" content="总结Three.js中的Raycaster的使用经验先上图：   图中的热点查询自数据库，同时鼠标点击可以添加热点 功能简介：这个项目是按照‘党’的需求做的，党给提出的需求是：    1. 能够加载三维模型。     2. 能切换三维模型。     3. 能在模型上点击添加热点annotation。     4. 热点上可以修改标注信息。     5. 鼠标可以操作模型，包括放缩和旋转平移。">
+<meta name="twitter:image" content="https://stonema.github.io/2018/03/20/ThreeJS中的Raycaster应用/0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/03/20/ThreeJS中的Raycaster应用/"/>
+
+
+
+
+
+  <title>ThreeJS中的Raycaster应用 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/03/20/ThreeJS中的Raycaster应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ThreeJS中的Raycaster应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-20T10:06:16+08:00">
+                2018-03-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="总结Three-js中的Raycaster的使用经验"><a href="#总结Three-js中的Raycaster的使用经验" class="headerlink" title="总结Three.js中的Raycaster的使用经验"></a>总结Three.js中的Raycaster的使用经验</h3><h4 id="先上图："><a href="#先上图：" class="headerlink" title="先上图："></a>先上图：</h4><p><img src="/2018/03/20/ThreeJS中的Raycaster应用/0.png" alt="Alt text"><br><strong>   图中的热点查询自数据库，同时鼠标点击可以添加热点</strong></p>
+<h3 id="功能简介："><a href="#功能简介：" class="headerlink" title="功能简介："></a>功能简介：</h3><h4 id="这个项目是按照‘党’的需求做的，党给提出的需求是："><a href="#这个项目是按照‘党’的需求做的，党给提出的需求是：" class="headerlink" title="这个项目是按照‘党’的需求做的，党给提出的需求是："></a>这个项目是按照‘党’的需求做的，党给提出的需求是：</h4><pre><code>    1. 能够加载三维模型。
+    2. 能切换三维模型。
+    3. 能在模型上点击添加热点annotation。
+    4. 热点上可以修改标注信息。
+    5. 鼠标可以操作模型，包括放缩和旋转平移。
+    6. 能够将标注信息存到数据库，每次加载模型时不需要重新标注。
+</code></pre><p>按照上面的需求，我做的过程中，遇到的主要的难点就在模型的annotation添加和保存后再加载这块了，因为之前在<br>Sketchfab.com网站上看到过类似的功能，（PS：老外的技术还是领先的）用起来非常的丝滑，柔顺，便利。这简单的几个功能，不知道是多少工程师的心血，但是可以肯定的是，他们能实现的，我们肯定也能实现。此处省去N多日夜……最终，如愿以偿，虽然代码写得有些冗余，但是还是基本实现了想要的功能。</p>
+<h3 id="Raycaster是什么？"><a href="#Raycaster是什么？" class="headerlink" title="Raycaster是什么？"></a>Raycaster是什么？</h3><p>Raycaster是Three.js中的射线，通过它，可以计算出射线与物体的交点，从而进行模型拾取，或者选中，等其他功能。<br>我要实现的是鼠标双击模型上的某一点，然后在这个点处添加一个annotation，然后在鼠标推拽物体，旋转物体的时候让annotation随着模型一起运动。</p>
+<h3 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h3><ol>
+<li>鼠标双击是要选中模型上的点的，鼠标是屏幕上的点，是二维坐标，但是模型上的点是三维坐标，如何将这个坐标进行转换呢？</li>
+<li>鼠标双击事件给annotaion添加title和content。</li>
+<li>annotation跟随模型运动，应该是实时渲染的结果。<h3 id="解决方法与实现过程："><a href="#解决方法与实现过程：" class="headerlink" title="解决方法与实现过程："></a>解决方法与实现过程：</h3><h4 id="1-加载模型："><a href="#1-加载模型：" class="headerlink" title="1. 加载模型："></a>1. 加载模型：</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">objLoader = <span class="keyword">new</span> THREE.OBJLoader();</span><br><span class="line">objLoader.setPath(<span class="string">'./obj/'</span>);</span><br><span class="line">objLoader.load(<span class="string">'zxj.obj'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">object</span>) </span>&#123;</span><br><span class="line">    object.traverse(<span class="function"><span class="keyword">function</span> (<span class="params">child</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (child.type === <span class="string">"Mesh"</span>) &#123;</span><br><span class="line">            child.geometry.computeBoundingBox();</span><br><span class="line">            child.geometry.verticesNeedUpdate = <span class="literal">true</span>;</span><br><span class="line">            child.material.side = THREE.DoubleSide;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    object.name = <span class="string">"zxj"</span>;  <span class="comment">//设置模型的名称</span></span><br><span class="line">    object.position.x = <span class="number">-100</span>;<span class="comment">//载入模型的时候的位置</span></span><br><span class="line">    object.position.y = <span class="number">0</span>;</span><br><span class="line">    object.position.z = <span class="number">-500</span>;</span><br><span class="line">    <span class="comment">// 对模型的大小进行调整</span></span><br><span class="line">    object.scale.x = <span class="number">0.001</span>;</span><br><span class="line">    object.scale.y = <span class="number">0.001</span>;</span><br><span class="line">    object.scale.z = <span class="number">0.001</span>;</span><br><span class="line">    <span class="comment">//写入场景内</span></span><br><span class="line">    scene.add(object);</span><br><span class="line">    objects.push(object);<span class="comment">//仿照ThreeJS写法</span></span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="2-如何才能选中鼠标点击的点？"><a href="#2-如何才能选中鼠标点击的点？" class="headerlink" title="2.如何才能选中鼠标点击的点？"></a>2.如何才能选中鼠标点击的点？</h4><p>在Three.js中还是能找到一些例子的：<a href="https://threejs.org/examples" target="_blank" rel="noopener">Three.js</a><br><strong>需要注意的地方：鼠标双击进行事件绑定，要监听鼠标双击事件，这里切记不要使用全局鼠标事件监听，而是应该一个一个进行绑定，否者会引起html标签中的鼠标事件失效。</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#test'</span>).click(onDocumentMouseDown);</span><br><span class="line"><span class="comment">//document.addEventListener('mousedown', onDocumentMouseDown, false); // 这里是个坑啊，一定要注意 鼠标单击事件如果绑定给全局document，其他需要鼠标单击的控件，全部失效</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="鼠标双击事件："><a href="#鼠标双击事件：" class="headerlink" title="鼠标双击事件："></a>鼠标双击事件：</h5><p>鼠标获取的点是屏幕坐标，因屏幕大小而定，这里要改成设备坐标系，也就是把屏幕坐标转换成从-1到1的标准坐标系，然后使用Camera位置和Mouse点击的点来定位射线方向，通过判断射线是否经过模型来实现在模型上添加点。<br>我们每次鼠标双击事件就是添加一个热点，所以要将热点存储到一个数组中rays[];<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rays = []; <span class="comment">//记录多次双击之后的射线与模型的外表面交点</span></span><br><span class="line"><span class="keyword">var</span> annos = <span class="keyword">new</span> <span class="built_in">Array</span>(); <span class="comment">//热点定义成数组</span></span><br><span class="line"><span class="keyword">var</span> intersects; <span class="comment">// 射线与模型的交点，这里交点会是多个，因为射线是穿过模型的，与模型的所有mesh都会有交点，但我们选取第一个，也就是intersects[0]。</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ondblClick</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> clientX;</span><br><span class="line">    <span class="keyword">var</span> clientY;</span><br><span class="line">    event.preventDefault();</span><br><span class="line">    <span class="comment">//获取屏幕坐标,鼠标点击的位置的坐标</span></span><br><span class="line">    clientX = event.clientX;</span><br><span class="line">    clientY = event.clientY;</span><br><span class="line">    <span class="comment">// 获取'转换后的设备坐标（即屏幕标准化后的坐标从 -1 到 +1）:</span></span><br><span class="line">    mouse.x = (event.clientX / renderer.domElement.clientWidth) * <span class="number">2</span> - <span class="number">1</span>; <span class="comment">//获取鼠标点击的位置的坐标</span></span><br><span class="line">    mouse.y = - (event.clientY / renderer.domElement.clientHeight) * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">    raycaster.setFromCamera(mouse, camera);<span class="comment">//从相机发射一条射线，经过鼠标点击位置 mouse为鼠标的二维设备坐标，camera射线起点处的相机</span></span><br><span class="line">    <span class="comment">// intersects 是后者的返回对象数组，</span></span><br><span class="line">    intersects = raycaster.intersectObjects(objects[<span class="number">0</span>].children, <span class="literal">false</span>); <span class="comment">//intersects是交点数组，包含射线与mesh对象相交的所有交点</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 如果射线与模型之间有交点，才执行如下操作 */</span></span><br><span class="line"><span class="keyword">if</span> (intersects.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (annos.length &gt; <span class="number">20</span>)&#123;</span><br><span class="line">        alert(<span class="string">"到达热点上限"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        $(<span class="string">'#myModal'</span>).modal(); <span class="comment">//调用模态框</span></span><br><span class="line">        <span class="comment">//加载模态框</span></span><br><span class="line">        rays.push(intersects[<span class="number">0</span>]); <span class="comment">//将射线与模型的第一个交点push到rays数组中.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样，就可以把选出来的点放入到rays[]中了。如何给这些点添加样式呢？我们需要有多少个rays交点创建多少个annotation：创建结点，append到页面，并push到annos数组中。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> div; <span class="comment">// 创建anno content的div</span></span><br><span class="line"><span class="keyword">var</span> sp;</span><br><span class="line"><span class="keyword">var</span> strong;</span><br><span class="line"><span class="keyword">var</span> p;</span><br><span class="line"><span class="keyword">var</span> num; <span class="comment">// annotation的数量</span></span><br><span class="line">sp = <span class="built_in">document</span>.createElement(<span class="string">'p'</span>);</span><br><span class="line">strong = <span class="built_in">document</span>.createElement(<span class="string">'strong'</span>);</span><br><span class="line">p =  <span class="built_in">document</span>.createElement(<span class="string">'p'</span>);</span><br><span class="line">strong.type = <span class="string">'text'</span>;</span><br><span class="line">div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">div.className = <span class="string">'annos'</span>;</span><br><span class="line">div.style.background = <span class="string">'rgba(0, 0, 0, 0.8)'</span>;</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(div);</span><br><span class="line">annos.push(div);</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-我们使用Ajax向后台传值，把坐标存起来"><a href="#3-我们使用Ajax向后台传值，把坐标存起来" class="headerlink" title="3.我们使用Ajax向后台传值，把坐标存起来"></a>3.我们使用Ajax向后台传值，把坐标存起来</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type: <span class="string">'POST'</span>,</span><br><span class="line">    url: <span class="string">'./addAnnos.do'</span>,</span><br><span class="line">    data:&#123;</span><br><span class="line">        <span class="comment">// 'id'     : num, //回头这个地方的id可以都去掉，让数据库的id自增长</span></span><br><span class="line">        <span class="string">'id'</span>     : $(<span class="string">'#recipient-id'</span>).val(),</span><br><span class="line">        <span class="string">'title'</span>  : $(<span class="string">'#recipient-name'</span>).val(),</span><br><span class="line">        <span class="string">'content'</span>: $(<span class="string">'#message-text'</span>).val(),</span><br><span class="line">        <span class="string">'x_point'</span>: x_point,</span><br><span class="line">        <span class="string">'y_point'</span>: y_point,</span><br><span class="line">        <span class="string">'z_point'</span>: z_point</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 考虑一下，如何把当前div对应的交点的下x,y,z值一起传过去</span></span><br><span class="line">    success: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        $(div).attr(<span class="string">'data-attr'</span>, $(<span class="string">'#recipient-id'</span>).val());<span class="comment">//操作伪dom中的内容，但是不能使用类选择器</span></span><br><span class="line">        $(div).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">hideAnno</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            $(div).find(<span class="string">"*"</span>).toggle(<span class="string">'fast'</span>);</span><br><span class="line">            <span class="keyword">if</span> (div.style.background != <span class="string">''</span>) &#123;</span><br><span class="line">                div.style.background = <span class="string">''</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                div.style.background = <span class="string">'rgba(0, 0, 0, 0.8)'</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">// var v = window.getComputedStyle(div,'::before').getPropertyValue('content');</span></span><br><span class="line">        <span class="comment">// annos[i] 初始化结束后进行赋值</span></span><br><span class="line">        $(<span class="string">'#recipient-id'</span>).val(<span class="string">""</span>);</span><br><span class="line">        $(<span class="string">'#recipient-name'</span>).val(<span class="string">""</span>);</span><br><span class="line">        $(<span class="string">'#message-text'</span>).val(<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h5 id="css页面：注意伪dom结点的处理"><a href="#css页面：注意伪dom结点的处理" class="headerlink" title="css页面：注意伪dom结点的处理"></a>css页面：注意伪dom结点的处理</h5><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.annos</span> &#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">1</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>: <span class="number">15px</span>;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">15px</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">1em</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">  <span class="attribute">border-radius</span>: .<span class="number">5em</span>;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">12px</span>;</span><br><span class="line">  <span class="attribute">line-height</span>: <span class="number">1.2</span>;</span><br><span class="line">  <span class="attribute">-webkit-transition</span>: opacity .<span class="number">5s</span>;</span><br><span class="line">  <span class="attribute">transition</span>: opacity .<span class="number">5s</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.annos</span><span class="selector-pseudo">::before</span> &#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="built_in">attr</span>(data-attr); </span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">top</span>: -<span class="number">30px</span>;</span><br><span class="line">  <span class="attribute">left</span>: -<span class="number">30px</span>;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">30px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">30px</span>;</span><br><span class="line">  <span class="attribute">border</span>: <span class="number">2px</span> solid <span class="number">#fff</span>;</span><br><span class="line">  <span class="attribute">border-radius</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">  <span class="attribute">line-height</span>: <span class="number">30px</span>;</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">  <span class="attribute">background</span>: <span class="built_in">rgba</span>(0, 0, 0, 0.8);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-更新屏幕中annotation的位置："><a href="#4-更新屏幕中annotation的位置：" class="headerlink" title="4.更新屏幕中annotation的位置："></a>4.更新屏幕中annotation的位置：</h4><p>annotation的位置是实时渲染的，所以这个方法是对所有的annotation进行位置更新，最终应该放在render渲染器中。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">updateAnnosPosition</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; annos.length; i++)&#123;</span><br><span class="line">            <span class="keyword">var</span> canvas = renderer.domElement;</span><br><span class="line">            <span class="comment">//var vector = new THREE.Vector3(clientX,clientY,-1);</span></span><br><span class="line">            <span class="comment">// var vector = new THREE.Vector3(intersects[i].point.x, intersects[i].point.y, intersects[i].point.z);</span></span><br><span class="line">            <span class="keyword">var</span> vector = <span class="keyword">new</span> THREE.Vector3(rays[i].point.x, rays[i].point.y, rays[i].point.z);</span><br><span class="line">            vector.project(camera);</span><br><span class="line">            <span class="comment">//这个位置的写法有问题</span></span><br><span class="line">            vector.x = <span class="built_in">Math</span>.round((<span class="number">0.5</span> + vector.x / <span class="number">2</span>) * (canvas.width / <span class="built_in">window</span>.devicePixelRatio)); <span class="comment">// 控制annotation跟随物体一起旋转</span></span><br><span class="line">            vector.y = <span class="built_in">Math</span>.round((<span class="number">0.5</span> - vector.y / <span class="number">2</span>) * (canvas.height / <span class="built_in">window</span>.devicePixelRatio));</span><br><span class="line">            annos[i].style.left = vector.x + <span class="string">"px"</span>;</span><br><span class="line">            annos[i].style.top = vector.y + <span class="string">"px"</span>;</span><br><span class="line">            annos[i].style.opacity = spriteBehindObject ? <span class="number">0.25</span> : <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//渲染器</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    renderer.render(scene, camera);</span><br><span class="line">    updateAnnotationOpacity(); <span class="comment">// 修改注解的透明度</span></span><br><span class="line">    <span class="comment">//updateScreenPosition(); // 修改注解的屏幕位置</span></span><br><span class="line">    <span class="keyword">if</span> (annos != <span class="literal">null</span>)&#123;</span><br><span class="line">        updateAnnosPosition();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这就是整个的实现过程了，而后就是将数据存入数据库，并同样将数据库中的数据取出来重新放入一个数组 ，再将对应的x,y,z坐标复原到一个annotation中。利用render进行渲染.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Three-js/" rel="tag"># Three.js</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/10/前端压缩/" rel="next" title="前端压缩">
+                <i class="fa fa-chevron-left"></i> 前端压缩
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/22/JS事件循环绑定/" rel="prev" title="JS循环绑定click事件">
+                JS循环绑定click事件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#总结Three-js中的Raycaster的使用经验"><span class="nav-number">1.</span> <span class="nav-text">总结Three.js中的Raycaster的使用经验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#先上图："><span class="nav-number">1.1.</span> <span class="nav-text">先上图：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能简介："><span class="nav-number">2.</span> <span class="nav-text">功能简介：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#这个项目是按照‘党’的需求做的，党给提出的需求是："><span class="nav-number">2.1.</span> <span class="nav-text">这个项目是按照‘党’的需求做的，党给提出的需求是：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raycaster是什么？"><span class="nav-number">3.</span> <span class="nav-text">Raycaster是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路："><span class="nav-number">4.</span> <span class="nav-text">思路：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方法与实现过程："><span class="nav-number">5.</span> <span class="nav-text">解决方法与实现过程：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-加载模型："><span class="nav-number">5.1.</span> <span class="nav-text">1. 加载模型：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-如何才能选中鼠标点击的点？"><span class="nav-number">5.2.</span> <span class="nav-text">2.如何才能选中鼠标点击的点？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#鼠标双击事件："><span class="nav-number">5.2.1.</span> <span class="nav-text">鼠标双击事件：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-我们使用Ajax向后台传值，把坐标存起来"><span class="nav-number">5.3.</span> <span class="nav-text">3.我们使用Ajax向后台传值，把坐标存起来</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#css页面：注意伪dom结点的处理"><span class="nav-number">5.3.1.</span> <span class="nav-text">css页面：注意伪dom结点的处理</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-更新屏幕中annotation的位置："><span class="nav-number">5.4.</span> <span class="nav-text">4.更新屏幕中annotation的位置：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

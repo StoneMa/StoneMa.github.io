@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JSZip,前端压缩," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="基于JSZip的前端文件压缩1. 简介：这段时间，项目需要做一个这样的功能：客户端在上传文件的时候（具体文件类型），需要对文件进行压缩再上传以节省带宽和服务器端资源，完成这个功能，我们选择了GitHub上的JSZip,它是一个客户端插件，可以提供客户端压缩功能，作者给出了API，但是实际使用过程中还是有很多问题，下面是实际过程中遇到的各类问题，直至最终完成整个文件压缩再上传至后台。 2.项目相关组">
+<meta name="keywords" content="JSZip,前端压缩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端压缩">
+<meta property="og:url" content="https://stonema.github.io/2018/03/10/前端压缩/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="基于JSZip的前端文件压缩1. 简介：这段时间，项目需要做一个这样的功能：客户端在上传文件的时候（具体文件类型），需要对文件进行压缩再上传以节省带宽和服务器端资源，完成这个功能，我们选择了GitHub上的JSZip,它是一个客户端插件，可以提供客户端压缩功能，作者给出了API，但是实际使用过程中还是有很多问题，下面是实际过程中遇到的各类问题，直至最终完成整个文件压缩再上传至后台。 2.项目相关组">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.204Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端压缩">
+<meta name="twitter:description" content="基于JSZip的前端文件压缩1. 简介：这段时间，项目需要做一个这样的功能：客户端在上传文件的时候（具体文件类型），需要对文件进行压缩再上传以节省带宽和服务器端资源，完成这个功能，我们选择了GitHub上的JSZip,它是一个客户端插件，可以提供客户端压缩功能，作者给出了API，但是实际使用过程中还是有很多问题，下面是实际过程中遇到的各类问题，直至最终完成整个文件压缩再上传至后台。 2.项目相关组">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/03/10/前端压缩/"/>
+
+
+
+
+
+  <title>前端压缩 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/03/10/前端压缩/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端压缩</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-10T20:40:51+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="基于JSZip的前端文件压缩"><a href="#基于JSZip的前端文件压缩" class="headerlink" title="基于JSZip的前端文件压缩"></a><strong>基于<a href="https://github.com/Stuk/jszip" target="_blank" rel="noopener">JSZip</a>的前端文件压缩</strong></h1><h2 id="1-简介："><a href="#1-简介：" class="headerlink" title="1. 简介："></a><strong>1. 简介：</strong></h2><p>这段时间，项目需要做一个这样的功能：<strong>客户端在上传文件的时候（具体文件类型），需要对文件进行压缩再上传以节省带宽和服务器端资源</strong>，完成这个功能，我们选择了GitHub上的<a href="https://github.com/Stuk/jszip" target="_blank" rel="noopener">JSZip</a>,它是一个客户端插件，可以提供客户端压缩功能，作者给出了<a href="http://stuk.github.io/jszip/documentation/api_jszip.html" target="_blank" rel="noopener">API</a>，但是实际使用过程中还是有很多问题，下面是实际过程中遇到的各类问题，直至最终完成整个文件压缩再上传至后台。</p>
+<h2 id="2-项目相关组件与环境："><a href="#2-项目相关组件与环境：" class="headerlink" title="2.项目相关组件与环境："></a><strong>2.项目相关组件与环境：</strong></h2><p>前端<code>node.js</code> + <code>webpack</code> 作前后台分离，后端<code>java</code></p>
+<h2 id="3-具体实现"><a href="#3-具体实现" class="headerlink" title="3. 具体实现"></a><strong>3. 具体实现</strong></h2><p><strong>主要js代码：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> JSZip = <span class="built_in">require</span>(<span class="string">'jszip'</span>);</span><br><span class="line"><span class="keyword">const</span> components = <span class="built_in">require</span>(<span class="string">'components'</span>);</span><br><span class="line"></span><br><span class="line">$(<span class="string">'#confirmBtn'</span>).on(<span class="string">'click'</span>, <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 绑定上传的确认按钮，获取到obj等模型文件，并压缩</span></span><br><span class="line">  <span class="keyword">let</span> zip = <span class="keyword">new</span> JSZip();<span class="comment">//声明并创建JSZip对象</span></span><br><span class="line">  <span class="keyword">var</span> fileBox = $(<span class="string">'#fileUploadInput'</span>); <span class="comment">//从页面获取到需要上传的文件列表，当然html是一个多文件上传</span></span><br><span class="line">  <span class="keyword">var</span> fileList = fileBox[<span class="number">0</span>].files;</span><br><span class="line">  <span class="keyword">var</span> objName = <span class="string">'example'</span>; <span class="comment">// 这里定义一个压缩文件的名字，以供后台使用，当然也可以动态获取</span></span><br><span class="line">  <span class="comment">//  var flag = false;</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> fileObject <span class="keyword">of</span> fileList) &#123;</span><br><span class="line">    zip = <span class="keyword">await</span> zipFileAsync(zip, fileObject); <span class="comment">//这是设置异步上传，await关键字使得后面的zipFileAsync方法执行结束后才将对象返回给zip变量</span></span><br><span class="line">  &#125;</span><br><span class="line">  sendFileAsync(zip, objName);</span><br><span class="line">  <span class="built_in">console</span>.log(zip);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// 设置return false防止表单提交</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>  <strong>这部分代码就是异步压缩的核心，以及如何调用的下面的异步压缩算法，上面需要Async与await关键字缺一不可，一开始也尝试过使用同步压缩的方式，但是会出现压缩还没有全部完成，就已经开始提交文件的现象，特别感谢<a href="https://segmentfault.com/u/lrh3321" target="_blank" rel="noopener">lrh3321</a>的指导，才完整的实现了这个功能。</strong></p>
+<hr>
+<p><strong>因为异步压缩的时候我们上传的文件的数量不定，所以上面需要使用await关键字来修饰压缩过程。而下面的压缩过程的实现，最终返回一个promise对象，当压缩过程已完成后，完整的生成的文件存于其中。</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 异步压缩文件</span></span><br><span class="line"><span class="comment"> * @param zip file</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">zipFileAsync</span>(<span class="params">zip, file</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> reader = <span class="keyword">new</span> FileReader();</span><br><span class="line">    reader.readAsDataURL(file);</span><br><span class="line">    reader.onloadend = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> result = reader.result;</span><br><span class="line">      <span class="comment">//  读完转一下格式</span></span><br><span class="line">      result = convertBase64UrlToBlob(result);</span><br><span class="line">      <span class="built_in">console</span>.log(zip);</span><br><span class="line">      <span class="built_in">console</span>.log(file.name);</span><br><span class="line">      <span class="built_in">console</span>.log(file.size);</span><br><span class="line">      <span class="comment">// resolve 方法保证异步压缩完成后才返回promise</span></span><br><span class="line">      resolve(</span><br><span class="line">        zip.file(file.name, result, &#123;</span><br><span class="line">          type: <span class="string">'blob'</span>,</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>这里的demo请查看JSZip给的例子</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 异步发送文件</span></span><br><span class="line"><span class="comment"> * @param zip file</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendFileAsync</span>(<span class="params">zip, objName</span>) </span>&#123;</span><br><span class="line">  zip.generateAsync(&#123;</span><br><span class="line">    type: <span class="string">'blob'</span>,</span><br><span class="line">    compression: <span class="string">'DEFLATE'</span>, <span class="comment">//  force a compression for this file</span></span><br><span class="line">    compressionOptions: &#123; <span class="comment">//  使用压缩等级，1-9级，1级压缩比最低，9级压缩比最高</span></span><br><span class="line">      level: <span class="number">6</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;).then(</span><br><span class="line">      <span class="function"><span class="keyword">function</span>(<span class="params">content</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData();</span><br><span class="line">        formData.append(<span class="string">'Blobfile'</span>, content); <span class="comment">// 获取上文中压缩的内容，并放入formdata</span></span><br><span class="line">        formData.append(<span class="string">'objName'</span>, objName); <span class="comment">// 将objName一起放入formdata</span></span><br><span class="line">        progressBar(<span class="string">'Model/UploadModel'</span>, formData, content.size); </span><br><span class="line">      &#125;</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将以base64的图片url数据转换为Blob</span></span><br><span class="line"><span class="comment"> * @param urlData</span></span><br><span class="line"><span class="comment"> * 用url方式表示的base64图片数据</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>http读取图片的时候会已base64编码形式对到服务器，如果不进行重新编码，则无法在图片查看器中查看图片</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convertBase64UrlToBlob</span>(<span class="params">urlData</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> bytes = <span class="built_in">window</span>.atob(urlData.split(<span class="string">','</span>)[<span class="number">1</span>]);</span><br><span class="line">  <span class="comment">//  处理异常,将ascii码小于0的转换为大于0</span></span><br><span class="line">  <span class="keyword">var</span> ab = <span class="keyword">new</span> <span class="built_in">ArrayBuffer</span>(bytes.length);</span><br><span class="line">  <span class="keyword">var</span> ia = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(ab);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; bytes.length; i++) &#123;</span><br><span class="line">    ia[i] = bytes.charCodeAt(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Blob([ab], &#123;<span class="attr">type</span>: <span class="string">'image/jpg'</span>&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JSZip/" rel="tag"># JSZip</a>
+          
+            <a href="/tags/前端压缩/" rel="tag"># 前端压缩</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/" rel="next" title="使用Git Pages 搭建可多终端编辑的个人博客">
+                <i class="fa fa-chevron-left"></i> 使用Git Pages 搭建可多终端编辑的个人博客
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/20/ThreeJS中的Raycaster应用/" rel="prev" title="ThreeJS中的Raycaster应用">
+                ThreeJS中的Raycaster应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于JSZip的前端文件压缩"><span class="nav-number">1.</span> <span class="nav-text">基于JSZip的前端文件压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-简介："><span class="nav-number">1.1.</span> <span class="nav-text">1. 简介：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-项目相关组件与环境："><span class="nav-number">1.2.</span> <span class="nav-text">2.项目相关组件与环境：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-具体实现"><span class="nav-number">1.3.</span> <span class="nav-text">3. 具体实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

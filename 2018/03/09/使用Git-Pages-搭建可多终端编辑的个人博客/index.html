@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GitPages,Hexo," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="使用Git Pages 搭建可多终端编辑的个人博客[TOC]Hexo作为一个优秀的静态博客框架，与传统的博客网站不同的是，Hexo的博客源文件是保存在本地的，Hexo是博客生成工具，将博客源文件，与页面展示分离，分开管理，使用Markdown语法编辑博客，然后使用Hexo 提供的 hexo generate    和 hexo deploy    命令将markdown文件生成相应的html文件。">
+<meta name="keywords" content="GitPages,Hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Git Pages 搭建可多终端编辑的个人博客">
+<meta property="og:url" content="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="使用Git Pages 搭建可多终端编辑的个人博客[TOC]Hexo作为一个优秀的静态博客框架，与传统的博客网站不同的是，Hexo的博客源文件是保存在本地的，Hexo是博客生成工具，将博客源文件，与页面展示分离，分开管理，使用Markdown语法编辑博客，然后使用Hexo 提供的 hexo generate    和 hexo deploy    命令将markdown文件生成相应的html文件。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/hexo.png">
+<meta property="og:image" content="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/1.png">
+<meta property="og:image" content="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/4.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Git Pages 搭建可多终端编辑的个人博客">
+<meta name="twitter:description" content="使用Git Pages 搭建可多终端编辑的个人博客[TOC]Hexo作为一个优秀的静态博客框架，与传统的博客网站不同的是，Hexo的博客源文件是保存在本地的，Hexo是博客生成工具，将博客源文件，与页面展示分离，分开管理，使用Markdown语法编辑博客，然后使用Hexo 提供的 hexo generate    和 hexo deploy    命令将markdown文件生成相应的html文件。">
+<meta name="twitter:image" content="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/hexo.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/"/>
+
+
+
+
+
+  <title>使用Git Pages 搭建可多终端编辑的个人博客 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Git Pages 搭建可多终端编辑的个人博客</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T16:57:57+08:00">
+                2018-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="使用Git-Pages-搭建可多终端编辑的个人博客"><a href="#使用Git-Pages-搭建可多终端编辑的个人博客" class="headerlink" title="使用Git Pages 搭建可多终端编辑的个人博客"></a>使用Git Pages 搭建可多终端编辑的个人博客</h2><p>[TOC]<br>Hexo作为一个优秀的静态博客框架，与传统的博客网站不同的是，Hexo的博客源文件是保存在本地的，Hexo是博客生成工具，将博客源文件，与页面展示分离，分开管理，使用Markdown语法编辑博客，然后使用Hexo 提供的 <code>hexo generate</code>    和 <code>hexo deploy</code>    命令将markdown文件生成相应的html文件。</p>
+<ul>
+<li>并不想在自己电脑上搭建服务</li>
+<li>也不想去购买云服务</li>
+<li>也不想用一些博客网站提供的个人博客功能，一来广告多，二来受人制约<br><strong>所以最好的办法是使用GitHub提供的GitHub-Pages服务来免费搭建自己的博客。</strong><h3 id="1-提出问题"><a href="#1-提出问题" class="headerlink" title="1.    提出问题"></a>1.    提出问题</h3>查看文件目录：</li>
+</ul>
+<p><img src="/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/hexo.png" alt="Alt text"></p>
+<p>我们通过<code>Hexo deploy</code>    将文件发布到GitHub-Pages的时候[此处实现方式省略]，会将public目录（HTML源文件）自动push到远程仓库的master分支。但是这个对于多终端博客同步来说没有任何意义，因为我们每次进行<code>Hexo generate</code>    的时候，都会根据source目录下的markdown源文件重新生成HTML文件，所以当我们在当前目录使用git同步的时候，master分支下会出现博客目录下的所有文件，而我们真正应该关心的是source目录下的markdown源文件，要维护的也是这部分文件的同步。所以问题的关键是：<strong>如何同步source目录下的源文件，以及配置文件_config.yml， scanffolds目录，themes目录。</strong></p>
+<blockquote>
+<p><strong>生成HTML页的目录：</strong><br><img src="/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/1.png" alt="Alt text"></p>
+<h3 id="2-解决问题"><a href="#2-解决问题" class="headerlink" title="2.解决问题"></a>2.解决问题</h3><p>首先在GitHub上创建一个同名的远程库，例如上图中我的repo名为：[username].github.io，使用这个库的master分支来管理public目录下的内容，（实际是.deploy_git中的内容，也就是说博客根目录git 初始化完毕后，里面的内容不需要使用git push 来提交到master分支，因为<code>hexo d</code>这条指令已经包含了相关的操作，&gt;具体请百度或google查看hexo github 配置，而且如果在本地博客根目录下使用<code>git pull</code>    会把master分支下的public目录中的内容都拉到本地，导致文件错乱）然后另新建一个名为source的分支来管理博客根目录下的无需发布，但需要多终端配置的内容（包括source文件夹下的.md文件<br>.gitignore文件中的内容说明的是当执行git push的时候忽略的文件，其他文件都要上传到source分支下进行同步。）<br><img src="/2018/03/09/使用Git-Pages-搭建可多终端编辑的个人博客/4.png" alt="Alt text"><br>到这里，解决问题的思路就清晰了：</p>
+<ul>
+<li>master分支来管理发布的博客内容</li>
+<li>source分支来管理Hexo博客的工作空间<h3 id="3-具体步骤："><a href="#3-具体步骤：" class="headerlink" title="3.具体步骤："></a>3.具体步骤：</h3></li>
+</ul>
+<ol>
+<li>在blog根目录初始化仓库，并切换到source分支，关联远程仓库，并push到远程仓库的source分支，这里会忽略 ignore掉的文件夹。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line">git init //在当前目录下初始化git仓库</span><br><span class="line">git checkout -b <span class="built_in">source</span> //新建一个<span class="built_in">source</span>分支，并切换到该分之下</span><br><span class="line">git add . //添加blog目录下的所有文件夹（.gitignore声明的文件除外）</span><br><span class="line">git commit -m <span class="string">'write some message'</span></span><br><span class="line">git remote add origin git@github.com:username/username.github.io.git //如果已经配置了源，这一条可以忽略</span><br><span class="line">git push origin <span class="built_in">source</span> //将本地更新push到远程库</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>至此，远程库中source分支下，已经有了我们本地的Hexo配置以及blog的源文件：.md文件</p>
+</blockquote>
+<ol>
+<li>将远程内容同步到另外一台机器 B主机<br>在另外一台电脑上，先把node环境配好，安装hexo。同时找个位置建立一个Blog的根目录文件夹。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>安装好Hexo后，注意不要进行初始化，因为这样又会生成Hexo的新的配置文件，而我们所需的内容都在source分支上管理，所以这里直接进行如下操作：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b <span class="built_in">source</span> git@github.com:username/username.github.io.git</span><br><span class="line"><span class="built_in">cd</span> username.github.io // packeage.json在<span class="built_in">clone</span>下来的项目目录中</span><br><span class="line">npm install //根据package.json来下载依赖包，这也是为什么我们不需要同步node_modules中的内容的原因!</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>这时我们已经有了远程的.md文件，也就是博客的源文件，到这里，我们A端，git服务器端，以及B端，已经有相同的工作空间与blog源文件内容了。（B端还没有Hexo g，所以没有public目录，没有Hexo d所以没有deploy文件，）</p>
+</blockquote>
+<ol>
+<li><p>我们可以开始在B终端写博客了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"about hexo sync"</span></span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"add blog"</span></span><br><span class="line">git push origin <span class="built_in">source</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>记住：以后git push的时候都要在source分支下，并且向source分支push，不需要在master分支做任何操作）。</p>
+</li>
+<li><p>B端上传博客并发布后，回到A端，同样再到source分支下进行同步。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout <span class="built_in">source</span></span><br><span class="line">git pull</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后在A端同样写博客：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"about hexo sync again"</span></span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"add blog"</span></span><br><span class="line">git push origin <span class="built_in">source</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看个人主页就能看到相应的变化，然后A端新增的内容同样再回到B端在source分之下进行git pull。</p>
+</li>
+<li>至此多终端同步工作完美实现。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GitPages/" rel="tag"># GitPages</a>
+          
+            <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/26/2018第一天/" rel="next" title="2018再出发!">
+                <i class="fa fa-chevron-left"></i> 2018再出发!
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/10/前端压缩/" rel="prev" title="前端压缩">
+                前端压缩 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Git-Pages-搭建可多终端编辑的个人博客"><span class="nav-number">1.</span> <span class="nav-text">使用Git Pages 搭建可多终端编辑的个人博客</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-提出问题"><span class="nav-number">1.1.</span> <span class="nav-text">1.    提出问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-解决问题"><span class="nav-number">1.2.</span> <span class="nav-text">2.解决问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-具体步骤："><span class="nav-number">1.3.</span> <span class="nav-text">3.具体步骤：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

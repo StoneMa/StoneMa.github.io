@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="JS,前端," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="遇到的问题：在开发的上一个Annotation的项目的过程中，遇到了需要绑定鼠标事件的问题，如图中所示，模型上有多个热点，可以通过点击热点实现热点说明的展开与关闭。 热点是数据库中动态查询出来的List&amp;lt;annotation&amp;gt;，这样的话，我们在前端就需要循环绑定onclick事件。我在迭代前端的对象的过程中，一度按照自己的想法去写（未使用闭包之前的写法）：123456789101112">
+<meta name="keywords" content="JS,前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS循环绑定click事件">
+<meta property="og:url" content="https://stonema.github.io/2018/03/22/JS事件循环绑定/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="遇到的问题：在开发的上一个Annotation的项目的过程中，遇到了需要绑定鼠标事件的问题，如图中所示，模型上有多个热点，可以通过点击热点实现热点说明的展开与关闭。 热点是数据库中动态查询出来的List&amp;lt;annotation&amp;gt;，这样的话，我们在前端就需要循环绑定onclick事件。我在迭代前端的对象的过程中，一度按照自己的想法去写（未使用闭包之前的写法）：123456789101112">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/03/22/JS事件循环绑定/1.png">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.163Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS循环绑定click事件">
+<meta name="twitter:description" content="遇到的问题：在开发的上一个Annotation的项目的过程中，遇到了需要绑定鼠标事件的问题，如图中所示，模型上有多个热点，可以通过点击热点实现热点说明的展开与关闭。 热点是数据库中动态查询出来的List&amp;lt;annotation&amp;gt;，这样的话，我们在前端就需要循环绑定onclick事件。我在迭代前端的对象的过程中，一度按照自己的想法去写（未使用闭包之前的写法）：123456789101112">
+<meta name="twitter:image" content="https://stonema.github.io/2018/03/22/JS事件循环绑定/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/03/22/JS事件循环绑定/"/>
+
+
+
+
+
+  <title>JS循环绑定click事件 | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/03/22/JS事件循环绑定/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JS循环绑定click事件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-22T14:29:19+08:00">
+                2018-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JS/" itemprop="url" rel="index">
+                    <span itemprop="name">JS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="遇到的问题："><a href="#遇到的问题：" class="headerlink" title="遇到的问题："></a>遇到的问题：</h3><p>在开发的上一个Annotation的项目的过程中，遇到了需要绑定鼠标事件的问题，如图中所示，模型上有多个热点，可以通过点击热点实现热点说明的展开与关闭。<br><img src="/2018/03/22/JS事件循环绑定/1.png" alt="Alt text"></p>
+<p>热点是数据库中动态查询出来的<code>List&lt;annotation&gt;</code>，这样的话，我们在前端就需要循环绑定<code>onclick</code>事件。我在迭代前端的对象的过程中，一度按照自己的想法去写（未使用闭包之前的写法）：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> anno_data;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadAnnos</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: <span class="string">'post'</span>,</span><br><span class="line">        url: <span class="string">'./queryAnnos.do'</span>,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (data != <span class="literal">null</span>)&#123;</span><br><span class="line">                anno_data = data;</span><br><span class="line">                createExsitAnnos();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> existAnnos = [];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createExsitAnnos</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; anno_data.length; j++)&#123;</span><br><span class="line">        <span class="keyword">var</span> e_div; <span class="comment">// 创建anno content的div</span></span><br><span class="line">        e_div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">        <span class="built_in">document</span>.body.appendChild(e_div);</span><br><span class="line">        existAnnos.push(e_div);</span><br><span class="line">        e_div.appendChild(sp);</span><br><span class="line">        <span class="comment">// 这样绑定click方法不行</span></span><br><span class="line">        $(e_div).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">hideExistAnno</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            $(e_div).find(<span class="string">"*"</span>).toggle(<span class="string">'fast'</span>);</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>导致的结果是对于所有的按钮都没有办法绑定独立的<code>onclick</code>事件，鼠标点击最终响应的是最后加载的那个热点。其实这就是常见的JS面试题里的那些东西，只不过换了个形式……自己就掉沟里了。<br>雷同面试题：下面代码中点击按钮后的内容：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"0"</span>&gt;</span>0<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"1"</span>&gt;</span>1<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">"2"</span>&gt;</span>2<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"> </span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;=<span class="number">2</span>; i++) &#123;</span></span><br><span class="line"><span class="javascript">        $(<span class="string">"#"</span> + i).on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="undefined">            alert(i);</span></span><br><span class="line"><span class="undefined">        &#125;);</span></span><br><span class="line"><span class="undefined">    &#125;;</span></span><br><span class="line"><span class="undefined">&#125;)</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><em>这段代码如果不仔细看的话会误以为三个按钮点击结果分别为0，1，2。但是运行结果却是3，3，3。</em><br><strong>我们来分析一下代码执行过程：前三遍循环分别给按钮0，1，2绑定了alert(i)的事件，第四遍循环开始时i=3，不符合i&lt;=2的条件，因此终止循环。这里要注意的是，前三遍循环绑定的是alert(i)事件，而不是alert(0)，alert(1)，alert(2)，因为在绑定的过程中on的事件处理函数里的代码并没有运行，因此在触发click事件之前并不知道i等于几，代码此时只认为i是一个全局变量（实际上i的作用域为最外层的function）。上面分析了，当循环结束时i等于3，因此3个按钮点击均为alert(3)。</strong></p>
+<hr>
+<p>回到上面的代码：我起初认为<code>createExsitAnnos()</code>方法中<code>$(e_div)</code>每次都能获取到当前句柄然后都当前句柄进行事件绑定，但实际并不是这样，在执行：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(e_div).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">hideExistAnno</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(e_div).find(<span class="string">"*"</span>).toggle(<span class="string">'fast'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这段代码的时候，跟上面的1，2，3的例子一样，是对每一个当前句柄绑定了<code>click</code>事件<code>hideExistAnno()</code>,但是，事件中的具体实现却没有在绑定时执行，也就是说<code>hideExistAnno()</code>这个方法是在用户点击鼠标的时候才会被调用，而前面的整个for循环绑定的过程中，都未执行，只是给句柄绑定了一个方法，具体方法实现是在点击的时候才进行，当鼠标点触发的时候，<code>$(e_div).find(&quot;*&quot;).toggle(&#39;fast&#39;);</code>先在实现方法内部寻找变量，发现并没有<code>e_div</code>这个句柄，因此到方法外部寻找句柄，此时的句柄是最后一个for循环的句柄，也就是最后的<code>annotation</code>因此所有的鼠标点击都会绑定到最后一个句柄。这就是没有维护好函数的作用域造成的结果。因此我们引入了闭包的思想。</p>
+<hr>
+<h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><p>将上面的事件绑定方法改为使用立即调用函数表达式 去编写：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">　　(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123; </span><br><span class="line">　　　　<span class="comment">//代码块 </span></span><br><span class="line">　　&#125;)(i)<span class="comment">//这就是立即调用函数表达式</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">    $(e).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">hideExistAnno</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $(e).find(<span class="string">"*"</span>).toggle(<span class="string">'fast'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)(e_div)</span><br></pre></td></tr></table></figure>
+<p>这样写就能实现每个<code>annotation</code>的事件绑定，后面括号中的<code>e_div</code>就会以参数<code>e</code>的形式传递到函数体内。</p>
+<h5 id="修改后的代码："><a href="#修改后的代码：" class="headerlink" title="修改后的代码："></a>修改后的代码：</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> anno_data;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadAnnos</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: <span class="string">'post'</span>,</span><br><span class="line">        url: <span class="string">'./queryAnnos.do'</span>,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (data != <span class="literal">null</span>)&#123;</span><br><span class="line">                anno_data = data;</span><br><span class="line">                createExsitAnnos();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> existAnnos = [];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createExsitAnnos</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; anno_data.length; j++)&#123;</span><br><span class="line">        <span class="keyword">var</span> e_div; <span class="comment">// 创建anno content的div</span></span><br><span class="line">        e_div = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>);</span><br><span class="line">        <span class="built_in">document</span>.body.appendChild(e_div);</span><br><span class="line">        existAnnos.push(e_div);</span><br><span class="line">        e_div.appendChild(sp);</span><br><span class="line">        <span class="comment">// 使用立即执行函数绑定</span></span><br><span class="line">        (<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">            $(e).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">hideExistAnno</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                $(e).find(<span class="string">"*"</span>).toggle(<span class="string">'fast'</span>);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;)(e_div)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="介绍三种解决循环绑定事件的方法："><a href="#介绍三种解决循环绑定事件的方法：" class="headerlink" title="介绍三种解决循环绑定事件的方法："></a>介绍三种解决循环绑定事件的方法：</h3><h5 id="1-第一种、编写一个function，在这个function中返回一个函数-："><a href="#1-第一种、编写一个function，在这个function中返回一个函数-：" class="headerlink" title="1. 第一种、编写一个function，在这个function中返回一个函数 ："></a>1. 第一种、编写一个function，在这个function中返回一个函数 ：</h5><p><em>其中get(0)指的是将jQuery对象转为DOM对象。</em><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">　　$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)&#123; </span><br><span class="line">　　　　　　$(<span class="string">"#btn"</span>+i).get(<span class="number">0</span>).onclick=btnClick(i); </span><br><span class="line"></span><br><span class="line">　　　　&#125; </span><br><span class="line">　　&#125;); </span><br><span class="line">　　<span class="keyword">var</span> btnClick=<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123; </span><br><span class="line">　　　　<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　　　alert(value); </span><br><span class="line">　　　　&#125; </span><br><span class="line">　　&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-第二种、使用立即调用函数表达式"><a href="#2-第二种、使用立即调用函数表达式" class="headerlink" title="2. 第二种、使用立即调用函数表达式 :"></a>2. 第二种、使用立即调用函数表达式 :</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">　　$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">1</span>;i&lt;=<span class="number">4</span>;i++)&#123; </span><br><span class="line">　　　　　　$(<span class="string">"#btn"</span>+i).get(<span class="number">0</span>).onclick=(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123; </span><br><span class="line">　　　　　　　　<span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　　　　　alert(value); </span><br><span class="line">　　　　　　&#125; &#125;)(i); </span><br><span class="line"></span><br><span class="line">　　　　&#125; </span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="3-第三种、使用jQuery的each函数-："><a href="#3-第三种、使用jQuery的each函数-：" class="headerlink" title="3. 第三种、使用jQuery的each函数 ："></a>3. 第三种、使用jQuery的each函数 ：</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">　　$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　$.each([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],<span class="function"><span class="keyword">function</span>(<span class="params">index,value</span>)</span>&#123; </span><br><span class="line">　　　　　　　　$(<span class="string">"#btn"</span>+value).get(<span class="number">0</span>).onclick=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">　　　　　　　　alert(value); </span><br><span class="line">　　　　　　&#125; </span><br><span class="line">　　　　&#125;); </span><br><span class="line">　　&#125;);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JS/" rel="tag"># JS</a>
+          
+            <a href="/tags/前端/" rel="tag"># 前端</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/20/ThreeJS中的Raycaster应用/" rel="next" title="ThreeJS中的Raycaster应用">
+                <i class="fa fa-chevron-left"></i> ThreeJS中的Raycaster应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/27/大话交叉熵/" rel="prev" title="大话交叉熵">
+                大话交叉熵 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#遇到的问题："><span class="nav-number">1.</span> <span class="nav-text">遇到的问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决办法："><span class="nav-number">2.</span> <span class="nav-text">解决办法：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#修改后的代码："><span class="nav-number">2.0.1.</span> <span class="nav-text">修改后的代码：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#介绍三种解决循环绑定事件的方法："><span class="nav-number">3.</span> <span class="nav-text">介绍三种解决循环绑定事件的方法：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-第一种、编写一个function，在这个function中返回一个函数-："><span class="nav-number">3.0.1.</span> <span class="nav-text">1. 第一种、编写一个function，在这个function中返回一个函数 ：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-第二种、使用立即调用函数表达式"><span class="nav-number">3.1.</span> <span class="nav-text">2. 第二种、使用立即调用函数表达式 :</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-第三种、使用jQuery的each函数-："><span class="nav-number">3.2.</span> <span class="nav-text">3. 第三种、使用jQuery的each函数 ：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="特征提取,图形,图像,角检测," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Youngs's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）特征点检测广泛应用到目标匹配、目标跟踪、三维重建等应用中，在进行目标建模时会对图像进行目标特征的提取，常用的有颜色、角点、特征点、轮廓、纹理等特征。上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这">
+<meta name="keywords" content="特征提取,图形,图像,角检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Harris Corner Detection">
+<meta property="og:url" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/index.html">
+<meta property="og:site_name" content="Youngs&#39;s Blog">
+<meta property="og:description" content="上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）特征点检测广泛应用到目标匹配、目标跟踪、三维重建等应用中，在进行目标建模时会对图像进行目标特征的提取，常用的有颜色、角点、特征点、轮廓、纹理等特征。上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/Harris_Corner.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/harris_region.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/harris_result.jpg">
+<meta property="og:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/subpixel3.png">
+<meta property="og:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/sift_scale_invariant.jpg">
+<meta property="og:updated_time" content="2020-01-18T01:45:05.157Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Harris Corner Detection">
+<meta name="twitter:description" content="上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）特征点检测广泛应用到目标匹配、目标跟踪、三维重建等应用中，在进行目标建模时会对图像进行目标特征的提取，常用的有颜色、角点、特征点、轮廓、纹理等特征。上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这">
+<meta name="twitter:image" content="https://stonema.github.io/2018/04/10/HarrisCornerDetection/Harris_Corner.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://stonema.github.io/2018/04/10/HarrisCornerDetection/"/>
+
+
+
+
+
+  <title>Harris Corner Detection | Youngs's Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Youngs's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good Good Study, Day Day Up !</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://stonema.github.io/2018/04/10/HarrisCornerDetection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Youngs">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Youngs's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Harris Corner Detection</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-10T16:50:40+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/图像处理/" itemprop="url" rel="index">
+                    <span itemprop="name">图像处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）"><a href="#上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）" class="headerlink" title="上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）"></a>上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）</h2><p>特征点检测广泛应用到目标匹配、目标跟踪、三维重建等应用中，在进行目标建模时会对图像进行目标特征的提取，常用的有颜色、角点、特征点、轮廓、纹理等特征。<br>上一篇文章当中，我们学习到了对于一个图像，图像的角落是比较适合作为特征的区域，是各个方向上强度变化较大的区域。早在一九八八年（1988年老子还特么没出生呢！人家就开始研究这些东西了。。。这个领域到底跟美国有多大差距啊！！），Chris Harris＆Mike Stephens早期在其论文《A Combined Corner and Edge Detector》中就尝试去发现了这些角落，并把它称为Harris Corner Detector。Harris角点检测是通过数学计算在图像上发现角点特征的一种算法，而且其具有旋转不变性的特质。它的原理就是找到滑动窗口内的点，然后这个点向各个方向上的灰度差最明显的地方（实际就是一阶导数最大的地方）。OpenCV中的Shi-Tomasi角点检测就是基于Harris角点检测改进算法。<br><img src="/2018/04/10/HarrisCornerDetection/Harris_Corner.jpg" alt="corner"></p>
+<p>他把这个简单的想法变成了一种数学形式。这个表达式如下：</p>
+<script type="math/tex; mode=display">E(u,v) = \sum_{x,y}\underbrace{w(x,y)}_{window function}[\underbrace{I(x+u,y+v)}_{shifted intensity} - \underbrace{I(x,y)}_{intensity}]^2</script><p><em>其中 $W(x, y)$ 表示移动窗口，$I(x, y)$ 表示像素灰度值强度，范围为 0～255。根据泰勒级数</em></p>
+<p>计算一阶到N阶的偏导数，最终得到一个Harris矩阵公式：<br>Window function是给对应的 $x,y$ 像素加权的矩形窗口或高斯窗口。对于角点检测，我们必须使得$E(u,v)$取得最大值。这样就意味着，对于上面的公式，我们必须使得等号后的第二项最大化（中括号内的项），运用泰勒展开式并使用一些数学过程，我们能够最终得到下列方程：</p>
+<script type="math/tex; mode=display">
+E(u,v) \approx [u,v] M
+\left[
+ \begin{matrix}
+   u\\
+   v\\
+  \end{matrix}
+\right]</script><p>同时：</p>
+<script type="math/tex; mode=display">
+M = \sum_{x,y}(x,y)
+\left[
+ \begin{matrix}
+   I_{x}I_{x}&I_{x}I_{y}\\
+   I_{x}I_{y}&I_{y}I_{y}\\
+  \end{matrix}
+\right]</script><p>这里$I<em>{x}$ 和 $I</em>{y}$ 是图像在 $x$ 和 $y$ 方向上的导数，（能够简单的通过<code>cv.Sobel()</code>方法得到）。</p>
+<p>然后是主要部分，这帮人又创建了一个得分数，它将决定一个窗口是否可以包含角点。</p>
+<script type="math/tex; mode=display">
+R = det(M) - k(trace(M))^2</script><p>and</p>
+<ul>
+<li>$det(M) = \lambda<em>{1}\lambda</em>{2}$  （是行列式）</li>
+<li>$trace(M) = \lambda<em>{1} + \lambda</em>{2}$ （是矩阵的迹）</li>
+<li>$\lambda<em>{1}$ and $\lambda</em>{2}$ （是M的特征值）</li>
+</ul>
+<p>通过上面的公式可以确定的是特征值决定了我们找到的这个区域中是包含的角点，边缘，还是平面。</p>
+<ul>
+<li>当 $|R|$ 是比较小的值的时候，也就是 $\lambda<em>{1}$ and $\lambda</em>{2}$ 很小，则表示这个区域是平坦的。</li>
+<li>当 $R &lt; 0$ 时，只有当 $\lambda<em>{1} &gt;&gt; \lambda</em>{2}$ 或者 $\lambda<em>{2} &gt;&gt; \lambda</em>{1}$ 时才会发生，此时表示这块区域是边缘。</li>
+<li>当 $R$ 是非常大的值的时候，只有当 $\lambda<em>{2}, \lambda</em>{2}$ 都比较大而且 $\lambda<em>{1}\sim\lambda</em>{2}$ 的时候这个区域表示角点。</li>
+</ul>
+<p>上面的表述可以用一张图片来表示</p>
+<p><img src="/2018/04/10/HarrisCornerDetection/harris_region.jpg" alt="image"></p>
+<p>上图中的横向和纵向分别可以看作是$\lambda<em>{1}$ 和 $\lambda</em>{2}$ 的坐标，不要把当作是个正方形。<br>哈里斯角点（角落）检测的结果是一个具有得分数的灰度图像。合适的阈值会帮助我们找到图像中的角点。我们将会以一个简单的例子说明。</p>
+<h2 id="Harris-Corner-Detector-在-OpenCV-中的应用"><a href="#Harris-Corner-Detector-在-OpenCV-中的应用" class="headerlink" title="Harris Corner Detector 在 OpenCV 中的应用"></a>Harris Corner Detector 在 OpenCV 中的应用</h2><p>OpenCV中有<code>cv.cornerHarris()</code>,它的参数分别是：</p>
+<ul>
+<li>img - Input image, 应该是32位的灰度图.</li>
+<li>blockSize - 考虑角点检测的邻域的大小.</li>
+<li>ksize - 使用Sobel导数的光圈参数</li>
+<li>k - 方程中Harris detector的自由参数.</li>
+</ul>
+<h2 id="example："><a href="#example：" class="headerlink" title="example："></a>example：</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line">filename = <span class="string">'chessboard.png'</span></span><br><span class="line">img = cv.imread(filename)</span><br><span class="line">gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)</span><br><span class="line">gray = np.float32(gray)</span><br><span class="line">dst = cv.cornerHarris(gray,<span class="number">2</span>,<span class="number">3</span>,<span class="number">0.04</span>)</span><br><span class="line"><span class="comment">#result is dilated for marking the corners, not important</span></span><br><span class="line">dst = cv.dilate(dst,<span class="keyword">None</span>)</span><br><span class="line"><span class="comment"># Threshold for an optimal value, it may vary depending on the image.</span></span><br><span class="line">img[dst&gt;<span class="number">0.01</span>*dst.max()]=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>]</span><br><span class="line">cv.imshow(<span class="string">'dst'</span>,img)</span><br><span class="line"><span class="keyword">if</span> cv.waitKey(<span class="number">0</span>) &amp; <span class="number">0xff</span> == <span class="number">27</span>:</span><br><span class="line">    cv.destroyAllWindows()</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="/2018/04/10/HarrisCornerDetection/harris_result.jpg" alt="image"></p>
+<h2 id="Corner-with-SubPixel-Accuracy-具有子像素准确度的角点"><a href="#Corner-with-SubPixel-Accuracy-具有子像素准确度的角点" class="headerlink" title="Corner with SubPixel Accuracy (具有子像素准确度的角点)"></a>Corner with SubPixel Accuracy (具有子像素准确度的角点)</h2><p>有时候，你可能需要以最高的精度找到角点，OpenCV提供了可以进一步细化像素检测角点的函数<code>cv.cornerSubPix()</code>，首先还是要先找到 Harris Corner 然后通过这些角点的质心来优化它们,下图中，Harris Corner是红色像素，精确角点为绿色像素。我们指定迭代次数或达到一定的准确度后停止，（二者以先发生者为准）。我们还需要定义要搜索拐角的邻域的大小。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2 <span class="keyword">as</span> cv</span><br><span class="line">filename = <span class="string">'chessboard2.jpg'</span></span><br><span class="line">img = cv.imread(filename)</span><br><span class="line">gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)</span><br><span class="line"><span class="comment"># find Harris corners</span></span><br><span class="line">gray = np.float32(gray)</span><br><span class="line">dst = cv.cornerHarris(gray,<span class="number">2</span>,<span class="number">3</span>,<span class="number">0.04</span>)</span><br><span class="line">dst = cv.dilate(dst,<span class="keyword">None</span>)</span><br><span class="line">ret, dst = cv.threshold(dst,<span class="number">0.01</span>*dst.max(),<span class="number">255</span>,<span class="number">0</span>)</span><br><span class="line">dst = np.uint8(dst)</span><br><span class="line"><span class="comment"># find centroids</span></span><br><span class="line">ret, labels, stats, centroids = cv.connectedComponentsWithStats(dst)</span><br><span class="line"><span class="comment"># define the criteria to stop and refine the corners</span></span><br><span class="line">criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, <span class="number">100</span>, <span class="number">0.001</span>)</span><br><span class="line">corners = cv.cornerSubPix(gray,np.float32(centroids),(<span class="number">5</span>,<span class="number">5</span>),(<span class="number">-1</span>,<span class="number">-1</span>),criteria)</span><br><span class="line"><span class="comment"># Now draw them</span></span><br><span class="line">res = np.hstack((centroids,corners))</span><br><span class="line">res = np.int0(res)</span><br><span class="line">img[res[:,<span class="number">1</span>],res[:,<span class="number">0</span>]]=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>]</span><br><span class="line">img[res[:,<span class="number">3</span>],res[:,<span class="number">2</span>]] = [<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>]</span><br><span class="line">cv.imwrite(<span class="string">'subpixel5.png'</span>,img)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下： （一些关键点可能需要放大来看）</p>
+<p><img src="/2018/04/10/HarrisCornerDetection/subpixel3.png" alt="subpixel3"></p>
+<hr>
+<p>至此Harris Corner Detection就介绍完了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Harris角点检测是特征点检测的基础，提出了应用邻近像素点灰度差值概念，从而进行判断是否为角点、边缘、平滑区域。Harris角点检测原理是利用移动的窗口在图像中计算灰度变化值，其中关键流程包括转化为灰度图像、计算差分图像、高斯平滑、计算局部极值、确认角点。在特征点检测中经常提出尺度不变、旋转不变、抗噪声影响等，这些是判断特征点是否稳定的指标。</p>
+<p>总的来说通过看公式</p>
+<script type="math/tex; mode=display">E(u,v) = \sum_{x,y}\underbrace{w(x,y)}_{window function}[\underbrace{I(x+u,y+v)}_{shifted intensity} - \underbrace{I(x,y)}_{intensity}]^2</script><p>第一项是窗口函数，第二项是灰度梯度，也就是灰度变化的导数，$x$，$y$ 决定了各个方向，而后窗口函数是矩形窗口函数，或者高斯窗口函数。这是因为：矩形窗口函数可以过滤掉图像边缘，因为边缘出去在边缘方向的梯度是很小的，其他方向梯度也很大；高斯窗口函数可以过滤掉凸点或者一些孤立点，因为凸点和孤立点的各个方向的梯度也很大。</p>
+<p>这两个结合使用就可以选出角点（图像上拐角的地方）。</p>
+<h2 id="问题与后续发展"><a href="#问题与后续发展" class="headerlink" title="问题与后续发展"></a>问题与后续发展</h2><ul>
+<li>后续又出现了Harris Corner的改进版：Shi-Tomasi Corner Detection</li>
+<li>Harris Corner是旋转不变的，但是不是尺度不变的，因为探测窗口的大小不变的情况下，放大图像后，原来的角点有可能变成平滑的,如下图：</li>
+</ul>
+<p><img src="/2018/04/10/HarrisCornerDetection/sift_scale_invariant.jpg" alt="sift"></p>
+<ul>
+<li>为了找到旋转，尺度都不变的探测器，由此诞生了SIFT。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Donate comment here</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/WeChatPay.png" alt="Youngs 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/aliPay.png" alt="Youngs 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/特征提取/" rel="tag"># 特征提取</a>
+          
+            <a href="/tags/图形/" rel="tag"># 图形</a>
+          
+            <a href="/tags/图像/" rel="tag"># 图像</a>
+          
+            <a href="/tags/角检测/" rel="tag"># 角检测</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/10/特征和特征提取/" rel="next" title="特征和特征提取">
+                <i class="fa fa-chevron-left"></i> 特征和特征提取
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/12/SIFT尺度不变特征变换/" rel="prev" title="SIFT尺度不变特征变换">
+                SIFT尺度不变特征变换 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Youngs" />
+            
+              <p class="site-author-name" itemprop="name">Youngs</p>
+              <p class="site-description motion-element" itemprop="description">吾虽浪迹天涯，却未迷失本心。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/StoneMa" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:yingshi.ma@outlook.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/u/5976306075" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/Stone.ma" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）"><span class="nav-number">1.</span> <span class="nav-text">上一篇文章介绍了什么是特征，本篇介绍一下如何提取特征（角点特征）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Harris-Corner-Detector-在-OpenCV-中的应用"><span class="nav-number">2.</span> <span class="nav-text">Harris Corner Detector 在 OpenCV 中的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#example："><span class="nav-number">3.</span> <span class="nav-text">example：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Corner-with-SubPixel-Accuracy-具有子像素准确度的角点"><span class="nav-number">4.</span> <span class="nav-text">Corner with SubPixel Accuracy (具有子像素准确度的角点)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题与后续发展"><span class="nav-number">6.</span> <span class="nav-text">问题与后续发展</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youngs</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
